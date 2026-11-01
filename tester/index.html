@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Test Kubelo before launch | Kubelo</title>
+<meta name="description" content="Help us test Kubelo, a free cube app for Android, before it comes to Google Play. It takes two taps.">
+<link rel="canonical" href="https://kubelo.app/tester/">
+<meta name="theme-color" content="#0b1230">
+<link rel="icon" type="image/png" sizes="32x32" href="/site/favicon-32.png">
+<link rel="preload" href="/site/fonts/schibsted-grotesk-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/site/fonts/schibsted-grotesk-500.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+/* The tester page, in the landing page's own style: the same blue-hour sky, the same type, text with a halo and no filled buttons. Absolute paths, since it is served from /tester/.
+   Both languages are in the page. English shows by default; tester.js picks Norwegian for nb, nn and no, and the link in the header switches. */
+@font-face{font-family:'Schibsted Grotesk';font-style:normal;font-weight:500;font-display:swap;src:url(/site/fonts/schibsted-grotesk-500.woff2) format('woff2')}
+@font-face{font-family:'Schibsted Grotesk';font-style:normal;font-weight:600;font-display:swap;src:url(/site/fonts/schibsted-grotesk-600.woff2) format('woff2')}
+:root{color-scheme:dark}
+html,body{margin:0;min-height:100%;background:#0b1230;color:#f3f1ec}
+body{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;font-family:'Schibsted Grotesk',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;position:relative;overflow-x:hidden}
+.sky{position:fixed;inset:0;z-index:0;background:#0b1230 url(/site/sky-blue-p.webp) 50% 50%/cover no-repeat}
+@media (min-aspect-ratio: 9/10){.sky{background-image:url(/site/sky-blue-l.webp)}}
+.sky::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,9,22,.38) 0%,rgba(6,9,22,.5) 40%,rgba(6,9,22,.78) 100%)}
+.h{text-shadow:0 0 2px rgba(8,10,20,.95),0 0 4px rgba(8,10,20,.95),0 0 6px rgba(8,10,20,.9),0 0 8px rgba(8,10,20,.9),0 0 10px rgba(8,10,20,.85),0 0 14px rgba(8,10,20,.8),0 0 22px rgba(8,10,20,.55)}
+a{color:#f3f1ec;text-decoration:none}
+a:focus-visible{outline:2px solid #f3f1ec;outline-offset:4px;border-radius:6px}
+header{position:relative;z-index:1;padding:0 24px;min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.wordmark{display:inline-flex;align-items:center;min-height:48px;font-weight:500;font-size:16px;letter-spacing:.22em}
+.switch{display:inline-flex;align-items:center;min-height:48px;padding:0 6px;font-weight:500;font-size:1rem}
+.switch[hidden]{display:none}
+main{position:relative;z-index:1;flex:1;width:100%;max-width:34rem;box-sizing:border-box;margin:0 auto;padding:12px 24px 56px;display:flex;flex-direction:column;gap:28px}
+.l-en,.l-nb{display:flex;flex-direction:column;gap:28px}
+.l-nb{display:none}
+html[data-lang=nb] .l-nb{display:flex}
+html[data-lang=nb] .l-en{display:none}
+h1{margin:0;font-weight:600;font-size:clamp(1.875rem,8vw,2.75rem);line-height:1.1;letter-spacing:-.022em;text-wrap:balance;overflow-wrap:anywhere}
+h2{margin:0;font-weight:600;font-size:1.3125rem;line-height:1.25;letter-spacing:-.012em;text-wrap:balance;overflow-wrap:anywhere}
+p{margin:0;font-weight:500;font-size:1.0625rem;line-height:1.5;color:#e9e7e1;text-wrap:pretty;overflow-wrap:anywhere}
+.lead{font-size:1.1875rem;color:#f3f1ec}
+.step{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.cta{display:inline-flex;align-items:center;gap:10px;min-height:48px;margin-top:6px;padding:0 20px;border:1px solid rgba(243,241,236,.7);border-radius:999px;font-weight:600;font-size:1.0625rem;line-height:1.25}
+.cta svg{flex:none;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.cta[hidden],.soon[hidden]{display:none}
+.soon{font-size:1rem;color:#d3d4d6;min-height:48px;display:flex;align-items:center}
+.cta:hover{border-color:#f3f1ec}
+.cta:focus-visible{outline-offset:3px;border-radius:999px}
+.box{padding:18px 20px 20px;border:1px solid rgba(243,241,236,.38);border-radius:24px;display:flex;flex-direction:column;gap:8px}
+.rules{margin-top:4px}
+.rules summary{display:flex;align-items:center;min-height:48px;cursor:pointer;font-weight:600;font-size:1.0625rem;list-style:none}
+.rules summary::-webkit-details-marker{display:none}
+.rules summary::after{content:"";flex:none;width:.55em;height:.55em;margin-left:12px;border-right:1.6px solid currentColor;border-bottom:1.6px solid currentColor;transform:rotate(45deg) translateY(-.15em)}
+.rules[open] summary::after{transform:rotate(-135deg)}
+.rules summary:focus-visible{outline:2px solid #f3f1ec;outline-offset:4px;border-radius:6px}
+.rules ul{margin:0;padding:0 0 4px 1.25rem;display:flex;flex-direction:column;gap:8px}
+.rules li ul{padding:6px 0 0 1.1rem;display:flex;flex-direction:column;gap:4px}
+.rules li{font-weight:500;font-size:1rem;line-height:1.5;color:#e9e7e1;overflow-wrap:anywhere}
+.small{font-size:.9375rem;color:#d3d4d6}
+.legal{padding:0 0 4px}
+@media (prefers-reduced-motion: no-preference){.cta{transition:border-color .2s ease}}
+</style>
+</head>
+<body>
+<div class="sky" aria-hidden="true"></div>
+<header>
+<a class="wordmark h" href="/" aria-label="Kubelo, home">KUBELO</a>
+<a class="switch h" id="switch" href="?lang=nb" hreflang="nb" lang="nb" hidden>Norsk</a>
+</header>
+<main>
+
+<div class="l-en" id="en" lang="en">
+<h1 class="h">Test Kubelo before launch</h1>
+<p class="lead h">Kubelo is a free cube app for Android. Help us test it before it comes to Google Play. It takes two taps.</p>
+<section class="step" aria-labelledby="en-1">
+<h2 class="h" id="en-1">1. Join the tester group</h2>
+<p class="h">Use the Google account you use in the Play Store, and tap Join group.</p>
+<a class="cta h" hidden data-link="GRUPPE_URL" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Join the group</span></a><p class="soon h" data-soon="GRUPPE_URL">The group link comes here soon</p>
+</section>
+<section class="step" aria-labelledby="en-2">
+<h2 class="h" id="en-2">2. Become a tester in Google Play</h2>
+<p class="h">Open the test link, tap Become a tester, and install Kubelo from Google Play.</p>
+<a class="cta h" hidden data-link="PLAY_TEST_URL" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg><span>Become a tester</span></a><p class="soon h" data-soon="PLAY_TEST_URL">The Google Play link comes here soon</p>
+</section>
+<p class="h">Keep the app and stay a tester for at least 14 days. You&rsquo;ll get a short mission now and then, and each one takes about two minutes.</p>
+<p class="h">You don&rsquo;t need to be technical. If you&rsquo;re short on time, just install the app, open it a few times during the 14 days, and keep it. That helps us meet Google&rsquo;s requirements.</p>
+<section class="box h" id="promise-en" aria-labelledby="en-p">
+<h2 id="en-p">Thank you for testing</h2>
+<p>As a tester, you get everything in the Kubelo app free for as long as the app exists, including anything we may charge for later. The promise applies to the Google account you tested with, if you were in the closed test for at least 14 days before the app came out for everyone. It doesn&rsquo;t cover physical products such as cubes. Tore Meling decides how long the app exists.</p>
+</section>
+<section class="box h" id="prize-en" aria-labelledby="en-z">
+<h2 id="en-z">A prize for the best tester</h2>
+<p>The tester who gives the most useful feedback gets a top-class speedcube after the test. To win, you must do every mission, stay in the test the whole time, and send at least five useful pieces of feedback, each with a screenshot. At least one of them must lead to a clear improvement in the app. If no one does, there is no prize. If Kubelo ever makes its own limited-edition cube, the winner also gets number 001.</p>
+<p>To take part, add your email once in a mission.</p>
+<details class="rules">
+<summary>The rules for the prize</summary>
+<ul>
+<li><strong>What you must do to win:</strong> All of these must be met. If no one meets them, no prize is given out.<ul><li>Answer every mission (day 2, 8 and 14).</li><li>Stay in the test the whole time.</li><li>Send at least five useful pieces of feedback, each with a screenshot.</li><li>At least one of them must lead to a clear improvement in the app. Tore Meling decides what counts, and the improvement can come after the test.</li></ul></li>
+<li><strong>Useful feedback</strong> is a bug that can be reproduced, with what happened or a screenshot, or a concrete suggestion that Tore Meling thinks is worth considering. &ldquo;Great app&rdquo; or &ldquo;doesn&rsquo;t work&rdquo; does not count.</li>
+<li><strong>The winner:</strong> Among those who meet the requirements, Tore Meling picks the one who has given the most useful feedback.</li>
+<li><strong>No link to Google Play:</strong> The prize has nothing to do with stars or reviews in Google Play.</li>
+<li><strong>Who can win:</strong> It is free to take part, and every tester aged 13 or older can win.</li>
+<li><strong>One winner:</strong> The name is made public only if the winner wants it.</li>
+<li><strong>Who cannot win:</strong> Tore Meling and those who work on Kubelo or are in talks about a partnership cannot win the prize. They can still test, and the promise of free use applies to them on the same terms as everyone else.</li>
+<li><strong>Number 001</strong> is a bonus. It is not a promise that the cube will be made.</li>
+</ul>
+</details>
+</section>
+<p class="small h"><em>Privacy:</em> Only Tore Meling, who makes Kubelo, can see who is in the group. Your email address is used only for the test and for the tester promise. You can leave the group at any time. You must be 13 or older. Signing up happens at Google; Kubelo collects nothing on this page and sets no cookies.</p>
+</div>
+
+<div class="l-nb" id="nb" lang="nb">
+<h1 class="h">Test Kubelo før lanseringen</h1>
+<p class="lead h">Kubelo er en gratis kubeapp for Android. Hjelp oss å teste appen før den kommer på Google Play. Det er to korte steg.</p>
+<section class="step" aria-labelledby="nb-1">
+<h2 class="h" id="nb-1">1. Bli med i testergruppen</h2>
+<p class="h">Bruk Google-kontoen du har i Play Butikk, og trykk «Bli med i gruppen».</p>
+<a class="cta h" hidden data-link="GRUPPE_URL" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Bli med i gruppen</span></a><p class="soon h" data-soon="GRUPPE_URL">Lenken til gruppen kommer her snart</p>
+</section>
+<section class="step" aria-labelledby="nb-2">
+<h2 class="h" id="nb-2">2. Bli tester i Google Play</h2>
+<p class="h">Åpne testlenken, trykk «Bli tester» og installer Kubelo fra Google Play.</p>
+<a class="cta h" hidden data-link="PLAY_TEST_URL" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg><span>Bli tester</span></a><p class="soon h" data-soon="PLAY_TEST_URL">Lenken til Google Play kommer her snart</p>
+</section>
+<p class="h">Behold appen og vær med i minst 14 dager. Nå og da får du et lite oppdrag som tar rundt to minutter.</p>
+<p class="h">Du trenger ikke være teknisk. Har du lite tid, holder det å installere appen, åpne den noen ganger i løpet av de 14 dagene og la den ligge på telefonen. Da hjelper du oss med kravene fra Google.</p>
+<section class="box h" id="promise-nb" aria-labelledby="nb-p">
+<h2 id="nb-p">Takk for at du tester</h2>
+<p>Som tester får du alt i Kubelo-appen gratis så lenge den finnes, også det vi kanskje tar betalt for senere. Løftet gjelder Google-kontoen du tester med, hvis du er påmeldt den lukkede testen i minst 14 dager før appen kommer ut for alle. Det gjelder ikke fysiske ting som kuber. Tore Meling avgjør hvor lenge appen finnes.</p>
+</section>
+<section class="box h" id="prize-nb" aria-labelledby="nb-z">
+<h2 id="nb-z">Premie til den beste testeren</h2>
+<p>Den som gir de nyttigste tilbakemeldingene i testen, får en kube i toppklasse når testen er over. For å kunne vinne må du gjøre alle oppdragene, være påmeldt testen hele tiden og sende minst fem nyttige tilbakemeldinger med et skjermbilde til hver. Minst én av dem må føre til at appen blir tydelig bedre. Klarer ingen alt dette, blir det ingen premie. Lager Kubelo en dag sin egen kube i et begrenset opplag, får vinneren også nummer 001.</p>
+<p>Vil du være med på premien, skriver du inn e-postadressen din én gang i et oppdrag.</p>
+<details class="rules">
+<summary>Reglene for premien</summary>
+<ul>
+<li><strong>Dette må du gjøre for å kunne vinne:</strong> Alle kravene må være oppfylt. Hvis ingen oppfyller dem, deles ingen premie ut.<ul><li>Svar på alle oppdragene (dag 2, 8 og 14).</li><li>Vær påmeldt i hele den lukkede testen.</li><li>Send minst fem nyttige tilbakemeldinger, hver med et skjermbilde.</li><li>Minst én av dem må føre til en tydelig forbedring av appen. Tore Meling avgjør hva som teller, og forbedringen kan komme etter testen.</li></ul></li>
+<li><strong>En nyttig tilbakemelding</strong> er en feil som kan gjenskapes, med det som skjedde eller et skjermbilde, eller et konkret forslag som Tore Meling mener er verdt å vurdere. &laquo;Bra app&raquo; eller &laquo;funker ikke&raquo; teller ikke.</li>
+<li><strong>Vinneren:</strong> Blant dem som oppfyller kravene, velger Tore Meling den som har gitt de mest nyttige tilbakemeldingene.</li>
+<li><strong>Ingen kobling til Google Play:</strong> Premien har ingenting med stjerner eller omtaler i Google Play å gjøre.</li>
+<li><strong>Hvem kan vinne:</strong> Det er gratis å være med, og alle testere som er 13 år eller eldre, kan vinne.</li>
+<li><strong>Én vinner:</strong> Navnet offentliggjøres bare hvis vinneren selv vil.</li>
+<li><strong>Hvem som ikke kan vinne:</strong> Tore Meling og de som jobber med Kubelo eller er i samtale om et samarbeid, kan ikke vinne premien. De kan likevel teste, og løftet om gratis bruk gjelder dem på samme vilkår som alle andre.</li>
+<li><strong>Nummer 001</strong> er en bonus. Det er ikke et løfte om at kuben blir laget.</li>
+</ul>
+</details>
+</section>
+<p class="small h"><em>Personvern:</em> Bare Tore Meling, som lager Kubelo, kan se hvem som er i gruppen. Vi bruker e-postadressen din bare til testen og til løftet til testerne. Du kan gå ut av gruppen når du vil. Du må være minst 13 år. Påmeldingen skjer hos Google; Kubelo samler ikke inn noe på denne siden og setter ingen informasjonskapsler.</p>
+</div>
+
+</main>
+<script src="/tester/config.js"></script>
+<script src="/tester/tester.js"></script>
+</body>
+</html>

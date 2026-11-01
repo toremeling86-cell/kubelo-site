@@ -1,0 +1,145 @@
+{
+  "versjon": "v1",
+  "laget": "2026-10-20",
+  "filer": {
+    "dag-2k.v1.ktx2": {
+      "niva": "forhånd",
+      "lag": "dag",
+      "bredde": 2048,
+      "hoyde": 1024,
+      "farge": "sRGB",
+      "format": "ETC1S",
+      "bytes": 226758,
+      "sha256": "5848bce29369d3958109e60a7d0510e59b2668137e238253476c2f8284b713be"
+    },
+    "skyer-2k.v1.ktx2": {
+      "niva": "forhånd",
+      "lag": "skyer",
+      "bredde": 2048,
+      "hoyde": 1024,
+      "farge": "lineær",
+      "format": "ETC1S",
+      "bytes": 419549,
+      "sha256": "164c093b4890676e9111050eef0283acb4dbe11e4a1d9462b857b409b85e343a"
+    },
+    "natt-2k.v1.ktx2": {
+      "niva": "forhånd",
+      "lag": "natt",
+      "bredde": 2048,
+      "hoyde": 1024,
+      "farge": "sRGB",
+      "format": "ETC1S",
+      "bytes": 141660,
+      "sha256": "37b57e0f910567e7888d7a0c7ac7e87e9ef9e817f72d9f42be9d1f63f9283610"
+    },
+    "hav-2k.v1.ktx2": {
+      "niva": "forhånd",
+      "lag": "hav",
+      "bredde": 2048,
+      "hoyde": 1024,
+      "farge": "lineær",
+      "format": "ETC1S",
+      "bytes": 107210,
+      "sha256": "272a53cfbda3293979df1aa182d0fb7f276a198cdfdee1cabf9900c472c143b3"
+    },
+    "dag-4k.v1.ktx2": {
+      "niva": "lav",
+      "lag": "dag",
+      "bredde": 4096,
+      "hoyde": 2048,
+      "farge": "sRGB",
+      "format": "ETC1S",
+      "bytes": 745981,
+      "sha256": "7b43522406ce1b063d21c16b1f13453db12bd2acbd587b97ced792aaeaac0f23"
+    },
+    "skyer-4k.v1.ktx2": {
+      "niva": "lav",
+      "lag": "skyer",
+      "bredde": 4096,
+      "hoyde": 2048,
+      "farge": "lineær",
+      "format": "ETC1S",
+      "bytes": 1542756,
+      "sha256": "10bcad3b847308b31126938b76b6ea340c168d6a1ad312e9c338b0c86c3a95d4"
+    },
+    "dag-8k.v1.ktx2": {
+      "niva": "høy",
+      "lag": "dag",
+      "bredde": 8192,
+      "hoyde": 4096,
+      "farge": "sRGB",
+      "format": "ETC1S",
+      "bytes": 2715744,
+      "sha256": "063d6d08b7cba4609e107ad84911a1783caa7a0458ed99f3aced21fd26ff66e6"
+    },
+    "skyer-8k.v1.ktx2": {
+      "niva": "høy",
+      "lag": "skyer",
+      "bredde": 8192,
+      "hoyde": 4096,
+      "farge": "lineær",
+      "format": "ETC1S",
+      "bytes": 5837357,
+      "sha256": "a9932d37a45e303533dbb82e2b3b6bf1d7d0d7b924b3a8a953e7bdb8d6ebaa12"
+    },
+    "hav-4k.v1.ktx2": {
+      "niva": "høy",
+      "lag": "hav",
+      "bredde": 4096,
+      "hoyde": 2048,
+      "farge": "lineær",
+      "format": "ETC1S",
+      "bytes": 222642,
+      "sha256": "8fffd3474f384c948ed18b0c73a5a0adda5886b2c0e60a1944d9d5fb9edd5d1d"
+    },
+    "natt-8k.v1.ktx2": {
+      "niva": "høy",
+      "lag": "natt",
+      "bredde": 8192,
+      "hoyde": 4096,
+      "farge": "sRGB",
+      "format": "ETC1S",
+      "bytes": 1434984,
+      "sha256": "1d96fd7757a9ba4f2284de0bed2a79b955c22c76f88873083cca5d5571b4e935"
+    }
+  },
+  "nivaer": {
+    "forhånd": {
+      "filer": [
+        "dag-2k.v1.ktx2",
+        "skyer-2k.v1.ktx2",
+        "natt-2k.v1.ktx2",
+        "hav-2k.v1.ktx2"
+      ],
+      "bytes": 895177,
+      "utoverForhånd": 0
+    },
+    "lav": {
+      "filer": [
+        "dag-4k.v1.ktx2",
+        "skyer-4k.v1.ktx2",
+        "natt-2k.v1.ktx2",
+        "hav-2k.v1.ktx2"
+      ],
+      "bytes": 2537607,
+      "utoverForhånd": 2288737
+    },
+    "høy": {
+      "filer": [
+        "dag-8k.v1.ktx2",
+        "skyer-8k.v1.ktx2",
+        "natt-8k.v1.ktx2",
+        "hav-4k.v1.ktx2"
+      ],
+      "bytes": 10210727,
+      "utoverForhånd": 10210727
+    }
+  },
+  "transkoder": {
+    "filer": [
+      "basis_transcoder.js",
+      "basis_transcoder.wasm"
+    ],
+    "bytes": 584862
+  }
+}

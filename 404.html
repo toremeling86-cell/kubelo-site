@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Page not found | Kubelo</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0b1230">
+<link rel="icon" type="image/png" sizes="32x32" href="/site/favicon-32.png">
+<link rel="preload" href="/site/fonts/schibsted-grotesk-600.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+/* The lost-link page, in the landing page's own style: the same blue-hour sky, the same type, one calm line. Absolute paths, since it is served from any address. */
+@font-face{font-family:'Schibsted Grotesk';font-style:normal;font-weight:500;font-display:swap;src:url(/site/fonts/schibsted-grotesk-500.woff2) format('woff2')}
+@font-face{font-family:'Schibsted Grotesk';font-style:normal;font-weight:600;font-display:swap;src:url(/site/fonts/schibsted-grotesk-600.woff2) format('woff2')}
+:root{color-scheme:dark}
+html,body{margin:0;min-height:100%;background:#0b1230;color:#f3f1ec}
+body{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;font-family:'Schibsted Grotesk',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;position:relative;overflow-x:hidden}
+.sky{position:fixed;inset:0;z-index:0;background:#0b1230 url(/site/sky-blue-p.webp) 50% 50%/cover no-repeat}
+@media (min-aspect-ratio: 9/10){.sky{background-image:url(/site/sky-blue-l.webp)}}
+.sky::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,9,22,0) 0%,rgba(6,9,22,0) 52%,rgba(6,9,22,.55) 78%,rgba(6,9,22,.86) 100%)}
+.h{text-shadow:0 0 2px rgba(8,10,20,.95),0 0 4px rgba(8,10,20,.95),0 0 6px rgba(8,10,20,.9),0 0 8px rgba(8,10,20,.9),0 0 10px rgba(8,10,20,.85),0 0 14px rgba(8,10,20,.8),0 0 22px rgba(8,10,20,.55)}
+a{color:#f3f1ec;text-decoration:none}
+a:focus-visible{outline:2px solid #f3f1ec;outline-offset:4px;border-radius:6px}
+header{position:relative;z-index:1;padding:0 24px;height:68px;display:flex;align-items:center}
+.wordmark{display:inline-flex;align-items:center;min-height:48px;font-weight:500;font-size:16px;letter-spacing:.22em}
+main{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px 24px 15vh;text-align:center}
+h1{margin:0;font-weight:600;font-size:clamp(1.75rem,7vw,2.75rem);line-height:1.1;letter-spacing:-.022em;text-wrap:balance;max-width:14em}
+p{margin:0;font-weight:500;font-size:1.0625rem;line-height:1.5;color:#e2e0da;max-width:24em;text-wrap:balance}
+.go{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 26px;margin-top:10px}
+.go a{display:inline-flex;align-items:center;min-height:48px;padding:0 6px;font-weight:500;font-size:1.0625rem}
+</style>
+</head>
+<body>
+<div class="sky" aria-hidden="true"></div>
+<header><a class="wordmark h" href="/" aria-label="Kubelo, home">KUBELO</a></header>
+<main>
+<h1 class="h">We can&rsquo;t find that page.</h1>
+<p class="h">The link may be old or mistyped.</p>
+<div class="go h"><a href="/">Back to Kubelo</a><a href="/play/">Play in your browser</a></div>
+</main>
+</body>
+</html>

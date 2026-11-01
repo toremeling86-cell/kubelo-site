@@ -1,0 +1,1 @@
+var e=()=>!0,t=()=>!e();function n(){try{return typeof location>`u`?``:location.search}catch{return``}}function r(e=n()){if(!t())return null;try{return new URLSearchParams(e)}catch{return null}}var i=(e,t)=>r(t)?.has(e)??!1,a=(e,t)=>r(t)?.get(e)??null;function o(e){return t()?i(`debug`,e):!1}export{i as a,r as i,o as n,a as r,t};

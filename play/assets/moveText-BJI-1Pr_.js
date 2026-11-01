@@ -1,0 +1,1 @@
+var e=/[’′‘`´]/g,t=t=>t.replace(e,`'`).replace(/²/g,`2`);function n(e){return t(e).trim().replace(/'/g,`′`).replace(/(?<=[A-Za-z])2(?=′?$)/,`²`)}function r(e){return e.split(/(\s+|[()[\],])/).map(e=>e===``||/^(\s+|[()[\],])$/.test(e)?e:n(e)).join(``)}var i=e=>e.split(/[\s,()[\]]+/).filter(Boolean).map(n);export{r as i,n,i as r,t};
