@@ -2,7 +2,7 @@
   "id": "./",
   "name": "Kubelo",
   "short_name": "Kubelo",
-  "description": "Scan your own 3x3 and solve it on screen, one move at a time. Timer and duels.",
+  "description": "A 3D cube on your phone, with a timer and duels. Scan your own 3x3 to play it too.",
   "lang": "en",
   "start_url": "./",
   "scope": "./",

@@ -17,7 +17,7 @@
 })();
 </script>
 <title>Kubelo: Cube Solver &amp; Timer</title>
-<meta name="description" content="Scan your own 3x3 and solve it on screen, one move at a time. A calm 3D cube from 2x2 to 7x7, with a timer and duels. Free, no account, no ads.">
+<meta name="description" content="Scan your own 3x3 and solve it on screen, one move at a time. A 3D cube from 2x2 to 7x7, with a timer and duels. Free, no account, no ads.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Kubelo: Cube Solver &amp; Timer">
 <meta property="og:description" content="Scan your own 3x3 and solve it on screen, one move at a time. Free, no account, no ads.">
@@ -99,8 +99,6 @@ svg.ic .hl{stroke:rgb(10,10,12)}
 .lead{font-weight:500;font-size:1.0625rem;line-height:1.5;color:var(--soft);max-width:24em;text-wrap:balance}
 .small{font-weight:500;font-size:.875rem;line-height:1.4;color:var(--muted)}
 .cta{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:2px 22px;margin-top:6px}
-.go{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 6px;font-weight:500;font-size:1.0625rem}
-.go svg{width:22px;height:22px}
 
 /* scan: the next move under the cube (the app's Help) */
 .help{display:flex;justify-content:center;gap:4px;height:62px;flex:none;opacity:0;transition:opacity .35s ease}
@@ -201,7 +199,6 @@ svg.ic .hl{stroke:rgb(10,10,12)}
   .small{font-size:1rem}
   .cta{justify-content:flex-start;gap:6px 30px;margin-top:10px}
   .badge img{height:72px}
-  .go{font-size:1.1875rem}
   .clock{font-size:3.5rem}
   .help{height:76px;gap:10px}.help .cell{width:52px}.help .cell svg{width:30px;height:30px}
   .duel{order:-1;justify-content:flex-start;gap:48px;margin-bottom:6px}
@@ -219,7 +216,6 @@ svg.ic .hl{stroke:rgb(10,10,12)}
 <body>
 <div class="kl is-flow" id="top" data-scan="reserve" data-play="closed">
 <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
-<symbol id="i-play" viewBox="0 0 24 24"><g class="hl"><path d="M8 5.5v13l10.5-6.5z" stroke-opacity=".1" stroke-width="9"></path><path d="M8 5.5v13l10.5-6.5z" stroke-opacity=".3" stroke-width="5"></path></g><path d="M8 5.5v13l10.5-6.5z" stroke="currentColor" stroke-width="1.6"></path></symbol>
 <symbol id="i-arrow" viewBox="0 0 24 24"><g class="hl"><path d="M5 12h14M12 5l7 7-7 7" stroke-opacity=".12" stroke-width="10"></path><path d="M5 12h14M12 5l7 7-7 7" stroke-opacity=".32" stroke-width="5.4"></path></g><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="1.75"></path></symbol>
 <symbol id="i-cw" viewBox="-2 -2 28 28"><g class="hl"><path d="M4.6 15.4A7.4 7.4 0 1 1 19.3 15.4M24.2 11.6L19.3 15.4L15.7 10.4" stroke-opacity=".12" stroke-width="10"></path><path d="M4.6 15.4A7.4 7.4 0 1 1 19.3 15.4M24.2 11.6L19.3 15.4L15.7 10.4" stroke-opacity=".32" stroke-width="5.4"></path></g><path d="M4.6 15.4A7.4 7.4 0 1 1 19.3 15.4M24.2 11.6L19.3 15.4L15.7 10.4" stroke="currentColor" stroke-width="1.75"></path></symbol>
 <symbol id="i-ccw" viewBox="-2 -2 28 28"><g class="hl"><path d="M19.4 15.4A7.4 7.4 0 1 0 4.7 15.4M-0.2 11.6L4.7 15.4L8.3 10.4" stroke-opacity=".12" stroke-width="10"></path><path d="M19.4 15.4A7.4 7.4 0 1 0 4.7 15.4M-0.2 11.6L4.7 15.4L8.3 10.4" stroke-opacity=".32" stroke-width="5.4"></path></g><path d="M19.4 15.4A7.4 7.4 0 1 0 4.7 15.4M-0.2 11.6L4.7 15.4L8.3 10.4" stroke="currentColor" stroke-width="1.75"></path></symbol>
@@ -253,11 +249,10 @@ svg.ic .hl{stroke:rgb(10,10,12)}
 <div class="visual"><div class="slot"><img class="poster" src="site/cube-poster.webp" srcset="site/cube-poster.webp 600w, site/cube-poster-1200.webp 1200w" sizes="(min-width: 900px) 46vw, 80vw" width="600" height="600" alt="A mixed-up 3×3 cube floating above the sea at blue hour." fetchpriority="high"></div></div>
 <div class="copy">
 <h1 class="d1 h" id="t-hero"><span class="nb">Scan your cube.</span> <span class="nb">Solve it on the screen.</span></h1>
-<p class="lead h">A calm 3D cube to play, time and share. Free, with no account and no ads.</p>
+<p class="lead h">A 3D cube on your phone, with a timer and duels. Free, with no account and no ads.</p>
 <div class="cta">
 <a class="tester-cta play-closed h" href="/tester/"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"></use></svg><span>Become a tester</span></a>
 <a class="badge play-open" href="https://play.google.com/store/apps/details?id=app.kubelo"><img src="site/google-play-badge.png" width="165" height="64" alt="Get it on Google Play" loading="lazy"></a>
-<a class="go h" href="/play/"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-play"></use></svg><span>Play in your browser</span></a>
 </div>
 </div>
 </section>
@@ -339,7 +334,6 @@ svg.ic .hl{stroke:rgb(10,10,12)}
 <div class="cta">
 <a class="tester-cta play-closed h" href="/tester/"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"></use></svg><span>Become a tester</span></a>
 <a class="badge play-open" href="https://play.google.com/store/apps/details?id=app.kubelo"><img src="site/google-play-badge.png" width="165" height="64" alt="Get it on Google Play" loading="lazy"></a>
-<a class="go h" href="/play/"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-play"></use></svg><span>Play in your browser</span></a>
 </div>
 <p class="wm h" role="img" aria-label="Kubelo">KUBELO</p>
 <nav aria-label="About Kubelo"><a class="h" href="privacy.html">Privacy policy</a><span aria-hidden="true">·</span><a class="h" href="leaderboard-rules.html">Leaderboard rules</a><span aria-hidden="true">·</span><a class="h" href="mailto:kontakt@kubelo.app">Contact</a></nav>

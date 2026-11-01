@@ -6,7 +6,7 @@
   var sw = document.getElementById('switch');
   var TITLE = { en: 'Test Kubelo before launch | Kubelo', nb: 'Test Kubelo før lanseringen | Kubelo' };
   var DESC = {
-    en: 'Help us test Kubelo, a free cube app for Android, before it comes to Google Play. It takes two taps.',
+    en: 'Help us test Kubelo, a free cube app for Android, before it launches on Google Play. Getting started takes two steps.',
     nb: 'Hjelp oss å teste Kubelo, en gratis kubeapp for Android, før appen kommer på Google Play. Det er to korte steg.'
   };
 
