@@ -3,6 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+/* «Side for datamaskiner» på en berøringstelefon: Chrome ser bort fra meta viewport og legger siden ut 980 px bred, så den ser ut som på en PC, bare liten.
+   Her skaleres siden opp til skjermbredden (CSS-zoom), så telefonutgaven vises. Faktoren står i --kz og i window.kubeloZoom (1 uten skalering): vw, vh og mål fra skript må deles på den.
+   Terskelen 1,15: i PC-modus på en telefon er forholdet over 2. Under 1,15 er forskjellen så liten at skalering bare gir støy (nettbrett, smale vinduer). PC-er har fin peker og røres ikke.
+   Appen under /play/ har ikke denne biten: testerne bruker den fra Play-butikken, og der finnes ikke PC-modus. */
+(function () {
+  var d = document.documentElement, T = 1.15, k = window.kubeloZoom = 1;
+  function fit() {
+    var w = d.clientWidth, s = screen.width, n = matchMedia('(pointer: coarse)').matches && s > 0 && w > s * T ? w / s : 1;
+    if (n === k) return;
+    window.kubeloZoom = k = n;
+    if (n > 1) { d.style.zoom = n; d.style.setProperty('--kz', n); }
+    else { d.style.removeProperty('zoom'); d.style.removeProperty('--kz'); }
+  }
+  fit();
+  addEventListener('resize', fit);
+  addEventListener('orientationchange', fit);
+})();
+</script>
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#f6f4ef" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0b0b0c" media="(prefers-color-scheme: dark)">
@@ -49,7 +68,8 @@ main { max-width: 44rem; margin: 0 auto; padding: 28px 0 72px; }
 .top .name { font-weight: 600; letter-spacing: 0.01em; }
 a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 a:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 3px; }
-h1 { font-size: clamp(2rem, 7vw, 2.75rem); line-height: 1.1; font-weight: 600; letter-spacing: -0.015em; margin: 0 0 12px; }
+/* --kz: skaleringen fra pc-modus-biten i <head> (1 uten). I «Side for datamaskiner» på en telefon zoomes siden, og da må vw deles på --kz for å bli det den var. */
+h1 { font-size: clamp(2rem, calc(7vw / var(--kz, 1)), 2.75rem); line-height: 1.1; font-weight: 600; letter-spacing: -0.015em; margin: 0 0 12px; }
 h2 { font-size: 1.3125rem; line-height: 1.25; font-weight: 600; margin: 2.6em 0 0.6em; letter-spacing: -0.005em; }
 h3 { font-size: 1.0625rem; line-height: 1.3; font-weight: 600; margin: 1.8em 0 0.4em; }
 p { margin: 0 0 1em; }
@@ -68,7 +88,9 @@ thead th { border-top: 0; border-bottom: 1px solid var(--line); color: var(--mut
 tbody th { font-weight: 600; width: 17%; }
 td.keys { width: 24%; }
 td:last-child { width: 19%; }
-@media (max-width: 40rem) {
+/* Tabellen stables på smale skjermer. Containerspørring, ikke media-spørring: i PC-modus på en telefon ser media-spørringen 980 px. Kroppen har 16 px luft på hver side, så 38 rem her er 40 rem i vinduet. */
+body { container-type: inline-size; container-name: pg; }
+@container pg (max-width: 38rem) {
   table, thead, tbody, tr, th, td { display: block; width: auto; }
   td.keys, td:last-child { width: auto; }
   thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }

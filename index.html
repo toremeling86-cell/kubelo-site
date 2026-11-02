@@ -16,18 +16,42 @@
   } catch (e) { /* the landing page shows */ }
 })();
 </script>
+<script>
+/* «Side for datamaskiner» på en berøringstelefon: Chrome ser bort fra meta viewport og legger siden ut 980 px bred, så den ser ut som på en PC, bare liten.
+   Her skaleres siden opp til skjermbredden (CSS-zoom), så telefonutgaven vises. Faktoren står i --kz og i window.kubeloZoom (1 uten skalering): vw, vh og mål fra skript må deles på den.
+   Terskelen 1,15: i PC-modus på en telefon er forholdet over 2. Under 1,15 er forskjellen så liten at skalering bare gir støy (nettbrett, smale vinduer). PC-er har fin peker og røres ikke.
+   Appen under /play/ har ikke denne biten: testerne bruker den fra Play-butikken, og der finnes ikke PC-modus. */
+(function () {
+  var d = document.documentElement, T = 1.15, k = window.kubeloZoom = 1;
+  function fit() {
+    var w = d.clientWidth, s = screen.width, n = matchMedia('(pointer: coarse)').matches && s > 0 && w > s * T ? w / s : 1;
+    if (n === k) return;
+    window.kubeloZoom = k = n;
+    if (n > 1) { d.style.zoom = n; d.style.setProperty('--kz', n); }
+    else { d.style.removeProperty('zoom'); d.style.removeProperty('--kz'); }
+  }
+  fit();
+  addEventListener('resize', fit);
+  addEventListener('orientationchange', fit);
+})();
+</script>
 <title>Kubelo: Cube Solver &amp; Timer</title>
 <meta name="description" content="Scan your own 3x3 and solve it on screen, one move at a time. A 3D cube from 2x2 to 7x7, with a timer and duels. Free, no account, no ads.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Kubelo: Cube Solver &amp; Timer">
 <meta property="og:description" content="Scan your own 3x3 and solve it on screen, one move at a time. Free, no account, no ads.">
-<meta property="og:image" content="https://kubelo.app/site/og.jpg">
+<meta property="og:image" content="https://kubelo.app/site/og.jpg?v=2">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="A mixed-up 3x3 cube floating above the sea at blue hour, with the name Kubelo.">
+<meta property="og:image:alt" content="A mixed-up cube with its top part mid-turn, floating above the sea at dusk, and the name Kubelo.">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://kubelo.app/">
 <meta name="theme-color" content="#0b1230">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/svg+xml" href="site/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="site/favicon-32.png">
+<link rel="apple-touch-icon" href="site/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <link rel="preload" href="site/fonts/schibsted-grotesk-600.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="site/fonts/schibsted-grotesk-500.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="site/sky-blue-p.webp" as="image" media="(max-aspect-ratio: 9/10)">
@@ -41,7 +65,8 @@
 :root{color-scheme:dark}
 html,body{margin:0;background:#070b1e;color:#f3f1ec}
 body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
-.kl{--ink:#f3f1ec;--soft:#e2e0da;--muted:#c3c6cd;--halo-rgb:8,10,20;--vw:1vw;--vh:1svh;--stage-h:100lvh;--pad:24px;--top:68px;
+/* --kz: skaleringen fra pc-modus-biten i <head> (1 uten). I «Side for datamaskiner» på en telefon zoomes siden, og da må vw, svh og lvh deles på --kz for å bli det de var. */
+.kl{--ink:#f3f1ec;--soft:#e2e0da;--muted:#c3c6cd;--halo-rgb:8,10,20;--vw:calc(1vw / var(--kz,1));--vh:calc(1svh / var(--kz,1));--stage-h:calc(100lvh / var(--kz,1));--pad:24px;--top:68px;
   position:relative;font-family:'Schibsted Grotesk',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ink);container-type:inline-size;container-name:kl}
 .kl *{box-sizing:border-box}
 .kl a{color:var(--ink);text-decoration:none}
@@ -154,7 +179,7 @@ svg.ic .hl{stroke:rgb(10,10,12)}
 .b-end nav{display:flex;flex-wrap:wrap;justify-content:center;gap:0 4px;margin:0 -14px}
 .b-end nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px;font-weight:500;font-size:.875rem}
 .b-end nav span{display:inline-flex;align-items:center;color:var(--muted)}
-@media (max-width: 359px){.b-end nav{gap:0 14px}.b-end nav span{display:none}}
+@container kl (max-width: 359px){.b-end nav{gap:0 14px}.b-end nav span{display:none}}
 .b-end .made{font-weight:600;font-size:.8125rem;letter-spacing:.02em;color:var(--soft)}
 .b-end .legal{font-weight:500;font-size:.8125rem;line-height:1.4;color:var(--muted);max-width:30em}
 
@@ -162,7 +187,7 @@ svg.ic .hl{stroke:rgb(10,10,12)}
 .b-records .copy,.b-board .copy,.b-free .copy{order:-1}
 .b-records,.b-board,.b-free{padding-top:calc(var(--top) + 4px)}
 
-/* short phones (640–700 px): the same page, a little denser */
+/* short phones (640–700 px): the same page, a little denser. Samme blokk står under .kl.kort: i PC-modus på en telefon ser media-spørringen 980 px og en for høy side, så skriptet setter .kort selv (setShort). Blokkene må være like; build/pc-modus.test.ts sjekker det. */
 @media (max-height: 700px) and (max-width: 899px){
   .kl > *{--top:58px;--pad:20px}
   .beat{gap:10px;padding-bottom:16px}
@@ -174,6 +199,16 @@ svg.ic .hl{stroke:rgb(10,10,12)}
   .duel .t{font-size:2.75rem}
   .badge img{height:60px}
 }
+:where(.kl.kort) > *{--top:58px;--pad:20px}
+:where(.kl.kort) .beat{gap:10px;padding-bottom:16px}
+:where(.kl.kort) .copy{gap:8px}
+:where(.kl.kort) .lead{line-height:1.42}
+:where(.kl.kort) .help{height:52px}
+:where(.kl.kort) .help .cell{gap:6px}
+:where(.kl.kort) .clock{font-size:2.25rem}
+:where(.kl.kort) .b-records .slot,:where(.kl.kort) .b-board .slot{min-height:120px}
+:where(.kl.kort) .duel .t{font-size:2.75rem}
+:where(.kl.kort) .badge img{height:60px}
 
 /* ---------- stage mode ---------- */
 .kl.is-stage .beats{position:fixed;left:0;top:0;width:100%;height:calc(var(--vh) * 100)}
@@ -246,7 +281,7 @@ svg.ic .hl{stroke:rgb(10,10,12)}
 
 <main class="beats">
 <section class="beat b-hero on" data-beat="hero" aria-labelledby="t-hero">
-<div class="visual"><div class="slot"><img class="poster" src="site/cube-poster.webp" srcset="site/cube-poster.webp 600w, site/cube-poster-1200.webp 1200w" sizes="(min-width: 900px) 46vw, 80vw" width="600" height="600" alt="A mixed-up 3×3 cube floating above the sea at blue hour." fetchpriority="high"></div></div>
+<div class="visual"><div class="slot"><img class="poster" src="site/cube-poster.webp" srcset="site/cube-poster.webp 600w, site/cube-poster-1200.webp 1200w" sizes="(min-width: 900px) 46vw, 80vw" width="600" height="600" alt="A mixed-up cube floating above the sea at dusk." fetchpriority="high"></div></div>
 <div class="copy">
 <h1 class="d1 h" id="t-hero"><span class="nb">Scan your cube.</span> <span class="nb">Solve it on the screen.</span></h1>
 <p class="lead h">A 3D cube on your phone, with a timer and duels. Free, with no account and no ads.</p>
@@ -347,7 +382,8 @@ svg.ic .hl{stroke:rgb(10,10,12)}
 </div>
 <script>
 /* The scan photo: Tore's photo of the cube (site/scan-photo-*.webp, no metadata). cx, cy and w say where the cube stands in the photo (its centre and its width, as fractions of the photo),
-   so the cube in the photo lands on the 3D cube. ONE line switches it off again: var SCAN_PHOTO = null; then the scan still from the app (the reserve) shows instead. */
+   so the cube in the photo lands on the 3D cube. ONE line switches it off again: var SCAN_PHOTO = null; then the scan still from the app (the reserve) shows instead.
+   Off 01.11, on again 02.11: at full size the reserve looked artificial, so the photo stays until the scan step is animated in the big round. */
 var SCAN_PHOTO = { src: 'site/scan-photo-800.webp', srcset: 'site/scan-photo-800.webp 800w, site/scan-photo-1600.webp 1600w', sizes: '(min-aspect-ratio: 9/10) 62vw, 125vw', cx: 0.543, cy: 0.515, w: 0.499 };
 /* The page: the scroll drives one evening. No third parties, no cookies, nothing stored.
    kubeloPage(root, { search, scan, reduced, cubeSrc, hook }) runs the same in the page and on the design canvas. */
@@ -422,13 +458,19 @@ function kubeloPage(root, opts) {
   }
 
   // ---------- layout: where each beat's cube stands (the slot) ----------
+  // getBoundingClientRect gir tall før zoom. I «Side for datamaskiner» på en telefon (pc-modus-biten) deles de på zoomen, så alt under regnes i siden sine egne piksler, som i vanlig mobilmodus.
   function measure() {
-    var st = E.stage.getBoundingClientRect(), L = { W: st.width, H: st.height, slots: {} };
+    var kz = window.kubeloZoom || 1, st = E.stage.getBoundingClientRect(), L = { W: st.width / kz, H: st.height / kz, slots: {} };
     ORDER.forEach(function (id) {
-      var r = E.slots[id].getBoundingClientRect(), s = Math.min(r.width, r.height);
-      L.slots[id] = { cx: r.left + r.width / 2 - st.left, cy: r.top + r.height / 2 - st.top, S: s * (id === 'records' || id === 'board' ? 1.05 : 1.0), top: r.top };
+      var r = E.slots[id].getBoundingClientRect(), s = Math.min(r.width, r.height) / kz;
+      L.slots[id] = { cx: (r.left + r.width / 2 - st.left) / kz, cy: (r.top + r.height / 2 - st.top) / kz, S: s * (id === 'records' || id === 'board' ? 1.05 : 1.0), top: r.top / kz };
     });
     return L;
+  }
+  // Korte telefoner: media-spørringen (CSS) ser 980 px og en for høy side i PC-modus, så .kort settes her fra høyden delt på zoomen. Uten zoom styrer media-spørringen alene.
+  function setShort() {
+    var kz = window.kubeloZoom || 1;
+    root.classList.toggle('kort', kz > 1 && window.innerHeight / kz <= 700 && root.clientWidth <= 899);
   }
   function anchorAt(p, L) {
     var i, b, prev, next, k = 0.2;
@@ -459,6 +501,7 @@ function kubeloPage(root, opts) {
     return true;
   }
   function decide() {
+    setShort();
     var want = !S.reduced && !S.forceFlow;
     if (want) { setMode('stage'); if (!fits()) setMode('flow'); }
     else if (S.mode !== 'flow') setMode('flow');
