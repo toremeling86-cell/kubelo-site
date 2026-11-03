@@ -1,0 +1,13 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.kubelo",
+      "sha256_cert_fingerprints": [
+        "7D:31:1E:CC:6B:54:6F:FF:23:A5:06:3C:C9:94:E9:1A:23:9F:C0:36:09:88:2C:08:BF:84:87:21:FC:F5:95:DF",
+        "5B:F8:A7:A9:55:D4:55:F5:F8:C9:03:24:CB:61:20:BA:C5:65:D5:32:D2:13:4E:C2:93:94:D7:E6:E0:3F:70:13"
+      ]
+    }
+  }
+]
