@@ -227,20 +227,19 @@ svg.ic .hl{stroke:rgb(10,10,12)}
 .rec-rows .you .n i{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--ink);font-style:normal;font-weight:600;color:var(--ink);font-size:.8125rem}
 .rec-foot{font-size:.8125rem;line-height:18px;color:var(--muted);margin-top:2px;max-width:22em}
 .rec-world .rec-pill:last-child{margin-top:0}
-/* A short slot (320 × 640 and other small phones): the same structure, condensed. The slot is a size container, so this follows its height, not the window's. */
-@container (max-height: 440px){
-  .rec-you,.rec-world{zoom:.82}
-  .rec-big{font-size:2.5rem;line-height:40px}
-  .rec-name{font-size:1.25rem;line-height:24px}
-  .rec-trend{margin:2px 0 0}
-  .rc-svg{height:76px}
-  .rec-avg{margin-top:4px}
-  .rec-rows .row4,.rec-rows .row5{display:none}
-  .rec-rows .gap .long{display:none}
-  .rec-rows .gap .short{display:inline}
-  .rec-rows li{min-height:28px;padding:1px 0}
-  .rec-foot{margin-top:4px}
-}
+/* A short slot (320 × 640 and other small phones): the same structure, condensed. decide() sets .rec-small when the slot is 440 px or less, and also when Records would not fit
+   without it (03.11: on Tore's S23 with screen zoom, 342 × 605, the slot was just over 440 px, so the query on the slot's height let go, and World lacked 8 px). */
+.kl.rec-small .rec-you,.kl.rec-small .rec-world{zoom:.82}
+.kl.rec-small .rec-big{font-size:2.5rem;line-height:40px}
+.kl.rec-small .rec-name{font-size:1.25rem;line-height:24px}
+.kl.rec-small .rec-trend{margin:2px 0 0}
+.kl.rec-small .rc-svg{height:76px}
+.kl.rec-small .rec-avg{margin-top:4px}
+.kl.rec-small .rec-rows .row4,.kl.rec-small .rec-rows .row5{display:none}
+.kl.rec-small .rec-rows .gap .long{display:none}
+.kl.rec-small .rec-rows .gap .short{display:inline}
+.kl.rec-small .rec-rows li{min-height:28px;padding:1px 0}
+.kl.rec-small .rec-foot{margin-top:4px}
 /* flow mode: You and World stand after each other, both tabs lit */
 .kl.is-flow .b-records .slot{flex:none;min-height:0;height:auto;container-type:normal}
 .kl.is-flow .rec{position:relative;inset:auto}
@@ -293,6 +292,8 @@ svg.ic .hl{stroke:rgb(10,10,12)}
 /* tight (decide(), 03.11): when a beat does not fit, Records lets go of the goal and the week line (the words below say it), and the end's cube may be smaller; only then does the page flow */
 .kl.tight .rec-goal,.kl.tight .rec-goalline,.kl.tight .rec-foot{display:none}
 .kl.tight .b-end .slot{min-height:118px}
+/* the end's wordmark goes too: in stage mode KUBELO stands at the top of the screen as well (03.11, Tore's S23 with screen zoom) */
+.kl.tight .b-end .wm{display:none}
 /* flow mode: the ground follows each block of words instead of the screen */
 .kl.is-flow .ground{display:none}
 /* An ordinary page has an ordinary top bar: it scrolls away with the page, so the words never run under the wordmark and the pill (03.11, iPhone SE in Safari). */
@@ -392,7 +393,7 @@ svg.ic .hl{stroke:rgb(10,10,12)}
 </div>
 <div class="copy">
 <h2 class="d2" id="t-scan">This is your cube</h2>
-<p class="lead">Hold up your mixed-up 3×3, and the camera reads the colors. Then play that same cube on the screen, and Help shows the next move until it is solved.</p>
+<p class="lead">Hold up your mixed-up 3×3, and the camera reads the colors. Then play that same cube on the screen, and Help shows the next move until it's solved.</p>
 <p class="small">No photos are saved or sent.</p>
 </div>
 </section>
@@ -405,7 +406,7 @@ svg.ic .hl{stroke:rgb(10,10,12)}
 </div>
 <div class="copy">
 <h2 class="d2" id="t-play">From 2×2 to 7×7</h2>
-<p class="lead">Drag to turn the cube. Tap Scramble, and the clock starts with your first turn.</p>
+<p class="lead">Drag to turn the cube. Tap Scramble to mix it, and the clock starts with your first turn.</p>
 </div>
 </section>
 
@@ -448,7 +449,7 @@ svg.ic .hl{stroke:rgb(10,10,12)}
 </div>
 <div class="copy">
 <h2 class="d2" id="t-records">See your progress</h2>
-<p class="lead">Send your cube to a friend as a link and compare times. Your best time sits at the top of Records, with a graph of your solves. World, the leaderboard, shows the top 100 this week and of all time, and our server replays and checks every posted solve.</p>
+<p class="lead">Your best time is at the top of Records, with a graph of your solves. World shows the top 100 this week and of all time.</p>
 </div>
 </section>
 
@@ -463,8 +464,8 @@ svg.ic .hl{stroke:rgb(10,10,12)}
 <footer class="beat b-end" data-beat="end" aria-labelledby="t-end">
 <div class="visual"><div class="slot"></div></div>
 <div class="copy">
-<h2 class="d2" id="t-end">Free, and yours</h2>
-<p class="lead">No account. No ads. Your times stay on your phone. If you join the leaderboard, your name, the solves you post and any reports you make are sent.</p>
+<h2 class="d2" id="t-end">It's free</h2>
+<p class="lead">No account and no ads. Your times stay on your phone unless you share them or post them to the leaderboard.</p>
 <div class="cta">
 <a class="tester-cta play-closed" href="/tester/"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"></use></svg><span>Become a tester</span></a>
 <a class="badge play-open" href="https://play.google.com/store/apps/details?id=app.kubelo"><img src="site/google-play-badge.png" width="165" height="64" alt="Get it on Google Play" loading="lazy"></a>
@@ -509,7 +510,7 @@ function kubeloPage(root, opts) {
   var mq = window.matchMedia ? matchMedia('(prefers-reduced-motion: reduce)') : null;
   var S = {
     reduced: (mq && mq.matches) || params.has('reduced') || !!opts.reduced, forceFlow: params.has('flow'),
-    mode: 'flow', p: 0, beat: 'hero', story: null, R: null, live: false, last: 0, drawn: null, lay: null, dprCap: 2, dead: false
+    mode: 'flow', level: -1, p: 0, beat: 'hero', story: null, R: null, live: false, last: 0, drawn: null, lay: null, dprCap: 2, dead: false
   };
   var E = {
     stage: q('.stage'), cube: q('.cube'), frame: q('.frame'), camera: q('.camera'), vignette: q('.vignette'), ground: q('.ground'), track: q('.track'), top: q('.top'),
@@ -603,13 +604,35 @@ function kubeloPage(root, opts) {
     for (var j = 0; j < sides.length; j++) if (sides[j].scrollHeight > sides[j].clientHeight + 2) return false;
     return true;
   }
+  // fits() with the text a little larger: the room a phone needs to spare before the page turns into a stage.
+  function fitsWith(grow) {
+    if (!grow) return fits();
+    var h = document.documentElement, was = h.style.fontSize, ok;
+    h.style.fontSize = parseFloat(getComputedStyle(h).fontSize) * (1 + grow) + 'px';
+    ok = fits(); h.style.fontSize = was;
+    return ok;
+  }
+  // The stage's levels, roomiest first: as it is, without what Records and the end can spare (.tight), and with Records condensed as well (.rec-small). Flow comes after the last.
+  var LEVELS = [[], ['tight'], ['tight', 'rec-small']];
   function decide() {
     setShort();
-    var want = !S.reduced && !S.forceFlow;
-    // Tight first, flow last: a phone with its text a little larger (Tore's S23) keeps the stage when Records and the end let go of what they can spare.
-    root.classList.remove('tight');
-    if (want) { setMode('stage'); if (!fits()) { root.classList.add('tight'); if (!fits()) { root.classList.remove('tight'); setMode('flow'); } } }
-    else if (S.mode !== 'flow') setMode('flow');
+    var want = !S.reduced && !S.forceFlow, now = S.mode === 'stage' ? S.level : -1, small, i;
+    // A phone with its text a little larger (Tore's S23) keeps the stage when Records and the end let go of what they can spare.
+    // Into the stage, or to another level, only when it still fits with the text 4 % larger; the level the page is on stays while everything fits.
+    // On Tore's S23 with screen zoom (342 × 605, 03.11) the page sat on the edge, opened as a stage and fell to flow a second later, when the font had loaded.
+    root.classList.remove('tight', 'rec-small');
+    if (want) {
+      setMode('stage');
+      // Records condenses in a short slot, as the query on the slot's height did before.
+      small = E.slots.records.clientHeight <= 440;
+      for (i = 0; i < LEVELS.length; i++) {
+        root.classList.remove('tight', 'rec-small');
+        LEVELS[i].forEach(function (c) { root.classList.add(c); });
+        if (small) root.classList.add('rec-small');
+        if (fitsWith(i === now ? 0 : 0.04)) break;
+      }
+      if (i < LEVELS.length) S.level = i; else { root.classList.remove('tight', 'rec-small'); setMode('flow'); }
+    } else if (S.mode !== 'flow') setMode('flow');
     drawChart(q('.rc-svg'));
     S.lay = null; tickSoon();
   }
