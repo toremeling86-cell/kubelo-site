@@ -1,10 +1,11 @@
-/* Kubelo site cube, round 19 («One evening»).
+/* Kubelo site cube, round 19 («One evening») and round 21 (the twist).
    A small WebGL1 port of the app's cube for kubelo.app. Values come from the app's own engine
    (engine/cubeView.ts classic finish, engine/engine.ts DEFAULT_COLORS, VIEW_TILT, BOB, world/places.ts,
    engine/celebrate.ts), so it looks and moves like the app, without three.js.
    Round 19: any size from 2x2 to 7x7, several cubes in one draw (the flowing page), four light moods
    (blue hour, night, sunrise, morning) and the cube's outline on screen (the scan frame locks to it).
-   window.KubeloCube = { Renderer, Story, model, outline, ... } */
+   Round 21: the cube in the hero can be twisted with a finger (pick, Story.twist*), as in the app (engine/gestures.ts, engine/turns.ts), and Scan solves the cube as you left it.
+   window.KubeloCube = { Renderer, Story, model, outline, pick, ... } */
 (function (G) {
   'use strict';
   var PI = Math.PI, D2R = PI / 180;
@@ -28,11 +29,8 @@
   function lin(h) { return hexRgb(h).map(toLin); }
   // engine.ts DEFAULT_COLORS
   var COLORS = { U: '#F4F3EC', D: '#FFD000', F: '#009B48', B: '#0046AD', R: '#B71234', L: '#FF5800' };
-  // What you see on each side. Free cube: white up, green front. The app's own scan (11-scan-result.png): yellow up, red front, green right.
-  var PALETTES = {
-    free: { U: COLORS.U, D: COLORS.D, F: COLORS.F, B: COLORS.B, R: COLORS.R, L: COLORS.L },
-    scan: { U: COLORS.D, D: COLORS.U, F: COLORS.R, B: COLORS.L, R: COLORS.F, L: COLORS.B }
-  };
+  // What you see on each side: white up, green in front, as in the app.
+  var PALETTES = { free: { U: COLORS.U, D: COLORS.D, F: COLORS.F, B: COLORS.B, R: COLORS.R, L: COLORS.L } };
 
   // ---------- model: an N×N×N cube, doubled coordinates (3x3: −2, 0, 2) as in core/cube.ts ----------
   function faceOf(n) { return n[0] === 1 ? 'R' : n[0] === -1 ? 'L' : n[1] === 1 ? 'U' : n[1] === -1 ? 'D' : n[2] === 1 ? 'F' : 'B'; }
@@ -86,7 +84,7 @@
     return { axis: axis, layers: layers, turns: turns, name: tok, face: L, prime: !!m[3], half: !!m[2] };
   }
   function parseAlg(s, md) { return s.trim().split(/\s+/).filter(Boolean).map(function (t) { return parseMove(t, md); }); }
-  function invertMove(mv) { var name = mv.half ? mv.name : mv.prime ? mv.face : mv.face + "'"; return { axis: mv.axis, layers: mv.layers.slice(), turns: -mv.turns, name: name, face: mv.face, prime: mv.half ? mv.prime : !mv.prime, half: mv.half }; }
+  function invertMove(mv) { var name = mv.half ? mv.name : mv.prime ? mv.face : mv.face + "'"; return { axis: mv.axis, layers: mv.layers.slice(), turns: -mv.turns, name: name, face: mv.face, prime: mv.half ? mv.prime : !mv.prime, half: mv.half, slice: mv.slice }; }
   function invertAlg(a) { return a.slice().reverse().map(invertMove); }
   function permute(md, arr, mv) { var p = md.permOf(mv), out = new Array(md.n); for (var i = 0; i < md.n; i++) out[p[i]] = arr[i]; return out; }
   function permute3(md, f, mv, tmp) { var p = md.permOf(mv); for (var i = 0; i < md.n; i++) { var j = p[i]; tmp[j * 3] = f[i * 3]; tmp[j * 3 + 1] = f[i * 3 + 1]; tmp[j * 3 + 2] = f[i * 3 + 2]; } f.set(tmp.subarray(0, md.n * 3)); }
@@ -109,7 +107,7 @@
     var md = this.md, w = { axis: axis, layers: md.layersAll, turns: turns };
     return new Track(md, permute(md, this.states[0], w), this.moves.map(function (m) {
       var e = [0, 0, 0]; e[m.axis] = 1; var v = mulVec(quarterTurn(axis, turns), e), b = v[0] ? 0 : v[1] ? 1 : 2, s = v[b];
-      return { axis: b, layers: m.layers.map(function (l) { return l * s; }), turns: m.turns * s, name: m.name, face: m.face, prime: m.prime, half: m.half };
+      return { axis: b, layers: m.layers.map(function (l) { return l * s; }), turns: m.turns * s, name: m.name, face: m.face, prime: m.prime, half: m.half, slice: m.slice };
     }));
   };
 
@@ -173,17 +171,11 @@
   // The page tells the Story where it is (scroll position p in viewport heights and the timeline);
   // the Story answers with the cube to draw and what the page shows around it (the next move, the clock).
   var ALG = {
-    // Your cube: the same mixed cube in the hero and in the scan. It is the cube in Tore's photo: white up, green in front, and
-    // this scramble gives exactly the 24 stickers the photo shows from the corner U-L-F (orange on the left, green on the right).
+    // Your cube: the mixed cube in the hero. It starts as the cube in Tore's photo (round 19: white up, green in front), and the finger changes it from there.
     yours: "R2 B U F' B U' L R2 F2 R2 U L2 D B2 L2 F2 D",
-    duel: "L F' U R2 F L' U2 R' F' L U' R",
     clock: "F2 U' L R2 B' D L2 F' U2 R B2 D'",
-    clockTurns: "R U R' U' F' L",
-    // The app's own scan example (10-scan-found.png and 11-scan-result.png): yellow up, red in front, one front turn from solved.
-    reserve: 'F'
+    clockTurns: "R U R' U' F' L"
   };
-  // The page's arrow for each move, as the app's Help shows it with white up and green in front.
-  var SYMBOL = { R: 'up', "R'": 'down', L: 'down', "L'": 'up', U: 'left', "U'": 'right', D: 'right', "D'": 'left', F: 'cw', "F'": 'ccw', B: 'ccw', "B'": 'cw' };
   var CLOCK = { scramble: 0.09, rest: 0.55, first: 0.5, every: 0.62, turn: 0.2 };
   function clockPlan(t, nScr, nTurns) {
     // The scramble runs fast (the app's Scramble), then the cube waits, then the person turns at their pace.
@@ -201,73 +193,109 @@
     var next = cur + step; return Math.abs(target - next) < 1e-3 ? target : next;
   }
   var SIZES = [2, 3, 4, 5, 6, 7];
-  // The camera. The page's cube is seen from the corner F-R (green on the left, red on the right). Tore's photo shows the corner U-L-F
-  // (orange on the left, green on the right), so in the hero and the scan (with the photo) the cube is seen from that corner: one quarter turn of the view.
-  var YAW = { front: -36, photo: -36 + 90 };
-  Story.prototype.yawFor = function (beat) { return this.variant === 'photo' && (beat === 'hero' || beat === 'scan') ? YAW.photo : YAW.front; };
+  // The camera: the page's cube is seen from the corner F-R (green on the left, red on the right), as in the app.
+  var YAW = -36, PITCH_DEG = 24;
+
+  // ---------- your moves: a twist of the finger becomes a move with the app's name ----------
+  var FACE_NAMES = [['L', 'R'], ['D', 'U'], ['B', 'F']], SLICE_NAMES = ['M', 'E', 'S'], SLICE_FOLLOWS = ['L', 'D', 'F'];
+  /** A move from its geometry (axis, the layer and quarter turns about +axis). A face gets the app's name (R, U', F2); the middle layer is a slice (M, E, S), named after the face it follows (notation.ts). */
+  function moveOf(axis, layers, turns, md) {
+    var o = md.outer, L = layers[0], t = ((turns % 4) + 4) % 4; if (t === 3) t = -1;
+    var slice = L !== o && L !== -o, face = slice ? SLICE_FOLLOWS[axis] : FACE_NAMES[axis][L === o ? 1 : 0];
+    var cw = slice ? -FACE[face][1] : (L === o ? -1 : 1), half = Math.abs(t) === 2, prime = !half && t !== cw;
+    return { axis: axis, layers: layers.slice(), turns: t, name: (slice ? SLICE_NAMES[axis] : face) + (half ? '2' : prime ? "'" : ''), face: face, prime: prime, half: half, slice: slice };
+  }
+  /** Adds a move to a list: a move on the same layer as the last one joins it (R R is R2, R R' is nothing), so the list stays as short as what was done. */
+  function pushMove(list, mv, md) {
+    var last = list[list.length - 1];
+    if (last && last.axis === mv.axis && last.layers.join() === mv.layers.join()) {
+      var t = ((last.turns + mv.turns) % 4 + 4) % 4; list.pop();
+      if (t !== 0) list.push(moveOf(mv.axis, mv.layers, t, md));
+    } else list.push(mv);
+  }
+  /** The arrow the app's Help shows for a move, from how the layer moves on screen: left, right, up or down, or cw and ccw when the layer turns toward you. */
+  function symbolFor(scene, mv) {
+    var R = cubeMatrix(scene), e = [0, 0, 0]; e[mv.axis] = 1;
+    var w = norm(apply3(R, e)), view = norm(EYE), d = w[0] * view[0] + w[1] * view[1] + w[2] * view[2];
+    if (Math.abs(d) > 0.7) return mv.turns * d > 0 ? 'ccw' : 'cw';
+    var r = norm([view[0] - d * w[0], view[1] - d * w[1], view[2] - d * w[2]]);
+    var x = (w[1] * r[2] - w[2] * r[1]) * mv.turns, y = (w[2] * r[0] - w[0] * r[2]) * mv.turns;
+    return Math.abs(x) > Math.abs(y) ? (x > 0 ? 'right' : 'left') : (y > 0 ? 'up' : 'down');
+  }
+  function toSRGB(v) { v = clamp01(v); return v <= 0.0031308 ? v * 12.92 : 1.055 * Math.pow(v, 1 / 2.4) - 0.055; }
+  function hexOf(cols, i) { return '#' + [0, 1, 2].map(function (k) { var b = Math.round(toSRGB(cols[i * 3 + k]) * 255); return (b < 16 ? '0' : '') + b.toString(16); }).join(''); }
+  /** The colour of a face's centre sticker in the colours shown (the dot under the arrow in Help). */
+  function faceHex(md, cols, face) {
+    var f = FACE[face], best = -1, bd = 1e9;
+    for (var i = 0; i < md.n; i++) { var s = md.slots[i]; if (s.n[f[0]] !== f[1]) continue; var d = Math.abs(s.p[(f[0] + 1) % 3]) + Math.abs(s.p[(f[0] + 2) % 3]); if (d < bd) { bd = d; best = i; } }
+    return best < 0 ? '#888' : hexOf(cols, best);
+  }
 
   function Story(o) {
     o = o || {};
-    this.T = o.timeline; this.reduced = !!o.reduced; this.variant = o.variant || 'photo';
-    var m3 = model(3), free = m3.solved(PALETTES.free);
-    var yours = parseAlg(ALG.yours, m3), yoursCols = applyAlg(m3, free, yours);
-    var res = parseAlg(ALG.reserve, m3), resCols = applyAlg(m3, m3.solved(PALETTES.scan), res);
-    var clk = parseAlg(ALG.clock, m3), turns = parseAlg(ALG.clockTurns, m3);
-    this.tracks = {
-      yours: new Track(m3, yoursCols, invertAlg(yours)),
-      reserve: new Track(m3, resCols, invertAlg(res)),
-      clock: new Track(m3, free, clk.concat(turns)),
-      duel: new Track(m3, applyAlg(m3, free, parseAlg(ALG.duel, m3)), []),
-      solved: new Track(m3, free, [])
-    };
-    this.tracks.yoursTurned = this.tracks.yours.turned(1, -1);
-    this.tracks.reserveTurned = this.tracks.reserve.turned(1, -1);
-    this.sizes = {}; var self = this;
+    this.T = o.timeline; this.reduced = !!o.reduced;
+    var m3 = this.m3 = model(3), free = m3.solved(PALETTES.free), self = this;
+    var yours = parseAlg(ALG.yours, m3), clk = parseAlg(ALG.clock, m3), turns = parseAlg(ALG.clockTurns, m3);
+    // Your cube: its colours now, and everything done to it since it was solved (the scramble, then your twists). Scan solves it by undoing that list.
+    this.free = { cols: applyAlg(m3, free, yours), history: [] };
+    yours.forEach(function (m) { pushMove(self.free.history, m, m3); });
+    this.freeTrack = new Track(m3, this.free.cols, []); this.scanT = null; this.twists = 0; this.tw = null; this.swayHold = false; this.justTwisted = false;
+    this.tracks = { clock: new Track(m3, free, clk.concat(turns)), solved: new Track(m3, free, []) };
+    this.sizes = {};
     SIZES.forEach(function (N) { var md = model(N); self.sizes[N] = new Track(md, md.solved(PALETTES.free), []); });
     this.nScr = clk.length; this.nTurns = turns.length;
-    this.view = new View(); this.time = 0; this.helpM = 0; this.cele = null; this.turned = false; this.clockT0 = null; this.size = 3; this.sizeAt = -9;
-    this.glassCount = o.glass || 240; this.seed = o.seed || 7; this.yawNow = null;
+    this.view = new View(); this.time = 0; this.swayT = 0; this.helpM = 0; this.cele = null; this.turned = false; this.clockT0 = null; this.size = 3; this.sizeAt = -9;
+    this.glassCount = o.glass || 240; this.seed = o.seed || 7;
   }
-  Story.prototype.help = function () { return this.variant === 'reserve' ? (this.turned ? this.tracks.reserveTurned : this.tracks.reserve) : (this.turned ? this.tracks.yoursTurned : this.tracks.yours); };
+  /** The scan's track: your cube as it is, and the moves that solve it (after the celebration's quarter turn, the same seen from there). */
+  Story.prototype.scanTrack = function () {
+    if (!this.scanT) { var base = new Track(this.m3, this.free.cols, invertAlg(this.free.history)); this.scanT = { base: base, turned: base.turned(1, -1) }; }
+    return this.turned ? this.scanT.turned : this.scanT.base;
+  };
   Story.prototype.sizeFor = function (p) {
-    var T = this.T, a = T.sizes.sweep[0], b = T.sizes.sweep[1];
+    var T = this.T, a = T.play.sweep[0], b = T.play.sweep[1];
     if (p < a) return 3;
     if (p < b) { var i = Math.min(5, Math.floor(span(p, a, b) * 6)); return SIZES[i]; }
-    return p < T.sizes.back ? 7 : 3;
+    return p < T.play.back ? 7 : 3;
+  };
+  /** The cells of Help for the next moves: the arrow as it looks from here, and the colour of the face that turns. */
+  Story.prototype.helpCells = function (tr, k, cols) {
+    var out = [], sc = { yaw: YAW, pitch: PITCH_DEG, bob: 0, scale: 1, model: this.m3 };
+    for (var i = k; i < Math.min(tr.n, k + 5); i++) { var m = tr.moves[i]; out.push({ sym: symbolFor(sc, m), color: faceHex(this.m3, cols, m.face) }); }
+    return out;
   };
   /** One frame of the flowing story. p: scroll position, beat: the beat id, mood: light weights. */
   Story.prototype.update = function (p, dt, beat, mood) {
-    var T = this.T, R = this.reduced, v = this.view; this.time += dt;
-    var scene = { yaw: -36, pitch: 24, bob: 0, scale: 1, turn: null, spread: 0, lit: 0, glass: null, sweep: null, cubeTurn: null, mood: mood, hidden: false };
-    var info = { beat: beat, busy: false };
+    var T = this.T, R = this.reduced, v = this.view; this.time += dt; if (!this.swayHold) this.swayT += dt;
+    var scene = { yaw: YAW, pitch: PITCH_DEG, bob: 0, scale: 1, turn: null, spread: 0, lit: 0, glass: null, sweep: null, cubeTurn: null, mood: mood, hidden: false };
+    var info = { beat: beat, busy: false, twists: this.twists, twisting: !!this.tw };
     var celeT = this.cele === null ? null : (this.time - this.cele) * 1000;
+    var tr = this.scanTrack(), tt = this.twistTick(dt);
     // Help: one move per scroll step, until it is solved; then the one celebration.
-    var helpGoal = clamp01((p - T.scan.help[0]) / (T.scan.help[1] - T.scan.help[0])) * this.help().n;
+    var helpGoal = clamp01((p - T.scan.help[0]) / (T.scan.help[1] - T.scan.help[0])) * tr.n;
     if (R) helpGoal = Math.floor(helpGoal + 1e-6);
     if (!(celeT !== null && celeT < TL.turn[1] && !R)) this.helpM = follow(this.helpM, helpGoal, dt, R ? Infinity : 5);
     if (beat === 'hero') {
-      // The hero is always your cube (the same as the poster, whatever the scan shows).
-      v.use(this.tracks.yours, 0, v.track && v.track.md.N !== 3);
+      // Your cube, as you left it. A layer you hold follows your finger.
+      v.use(this.freeTrack, 0, this.justTwisted || (v.track && v.track.md.N !== 3)); this.justTwisted = false;
+      if (tt) { scene.turn = tt; info.busy = true; }
     } else if (beat === 'scan') {
-      var tr = this.help();
       if (!this.cele && this.helpM >= tr.n - 1e-3 && p >= T.scan.help[1] - 0.02) { this.cele = this.time; celeT = 0; }
       v.use(tr, this.helpM);
       scene.turn = v.turnAt(this.helpM, R);
       info.move = Math.min(tr.n, Math.floor(this.helpM + 1e-6)); info.moves = tr.moves; info.solved = this.helpM >= tr.n - 1e-3;
-    } else if (beat === 'sizes') {
+    } else if (beat === 'play') {
       var N = this.sizeFor(p);
       if (N !== this.size) { this.size = N; this.sizeAt = this.time; }
-      if (p < T.sizes.back || N !== 3) { v.use(this.sizes[N], 0, true); info.size = N; }
+      if (p < T.play.back || N !== 3) { v.use(this.sizes[N], 0, true); info.size = N; }
       else {
-        if (this.clockT0 === null || this.lastBeat !== 'sizes' || this.lastN !== 3) this.clockT0 = this.time;
+        if (this.clockT0 === null || this.lastBeat !== 'play' || this.lastN !== 3) this.clockT0 = this.time;
         var cp = clockPlan(this.time - this.clockT0, this.nScr, this.nTurns), m = R ? Math.floor(cp.m + 1e-6) : cp.m;
         v.use(this.tracks.clock, m); scene.turn = v.turnAt(m, R);
         info.size = 3; info.clock = cp.clock; info.clockRunning = cp.running; info.phase = cp.phase; info.busy = true;
       }
       this.lastN = N;
       if (!R) { var pop = span(this.time - this.sizeAt, 0, 0.32); scene.scale = 0.9 + 0.1 * EASE_OUT(pop); if (pop < 1) info.busy = true; }
-    } else if (beat === 'duel') {
-      v.use(this.tracks.duel, 0, v.track && v.track.md.N !== 3);
     } else {
       v.use(this.tracks.solved, 0, v.track && v.track.md.N !== 3);
     }
@@ -287,28 +315,31 @@
     }
     var fading = v.step(dt, R ? 0.03 : 0.11);
     scene.model = v.track.md; scene.cols = v.shown;
-    var yawTo = this.yawFor(beat);
-    this.yawNow = this.yawNow === null || R ? yawTo : this.yawNow + (yawTo - this.yawNow) * (1 - Math.exp(-dt / 0.3));
-    scene.yaw = this.yawNow + (R ? 0 : 12 * Math.sin((2 * PI * this.time) / 16));
-    scene.bob = R ? 0 : 0.05 * Math.sin(this.time * 0.9);
-    info.busy = info.busy || fading || scene.turn !== null || Math.abs(this.helpM - helpGoal) > 1e-3;
+    scene.yaw = YAW + (R ? 0 : 12 * Math.sin((2 * PI * this.swayT) / 16));
+    scene.bob = R ? 0 : 0.05 * Math.sin(this.swayT * 0.9);
+    if (beat === 'scan' && !info.solved) info.help = this.helpCells(tr, info.move, v.shown);
+    info.busy = info.busy || fading || scene.turn !== null || Math.abs(this.helpM - helpGoal) > 1e-3 || !!tt;
     return { scene: scene, info: info };
   };
   Story.prototype.finishTurn = function () {
-    var v = this.view, tr = this.help(), md = tr.md, w = { axis: 1, layers: md.layersAll, turns: -1 };
+    var v = this.view, md = this.m3, w = { axis: 1, layers: md.layersAll, turns: -1 };
     if (v.track && v.track.md === md && v.shown) permute3(md, v.shown, w, v._tmp);
-    this.turned = true; var t2 = this.help(); v.track = t2; v.k = Math.min(t2.n, Math.round(this.helpM)); v.goal = t2.target(v.k);
+    this.turned = true; var t2 = this.scanTrack(); v.track = t2; v.k = Math.min(t2.n, Math.round(this.helpM)); v.goal = t2.target(v.k);
   };
   /** A still for one beat (the flowing page, reduced motion and the storyboard). o: { help: 0..1, size, clock } */
   Story.prototype.still = function (beat, mood, o) {
     o = o || {};
-    var scene = { yaw: -36, pitch: 24, bob: 0, scale: 1, turn: null, spread: 0, lit: 0, glass: null, sweep: null, cubeTurn: null, mood: mood, hidden: false }, info = { beat: beat }, tr, k;
-    if (beat === 'scan') {
-      tr = this.variant === 'reserve' ? this.tracks.reserve : this.tracks.yours;
+    var scene = { yaw: YAW, pitch: PITCH_DEG, bob: 0, scale: 1, turn: null, spread: 0, lit: 0, glass: null, sweep: null, cubeTurn: null, mood: mood, hidden: false }, info = { beat: beat, twists: this.twists }, tr, k;
+    if (beat === 'hero') {
+      tr = this.freeTrack; scene.model = tr.md; scene.cols = new Float32Array(tr.target(0));
+      var tw = this.tw; if (tw && tw.axis !== undefined) { scene.turn = { axis: tw.axis, layers: tw.layers, angle: tw.angle }; info.busy = true; }
+    } else if (beat === 'scan') {
+      tr = this.scanT ? this.scanT.base : this.scanTrack();
       k = Math.round((o.help === undefined ? 0 : o.help) * tr.n);
       scene.model = tr.md; scene.cols = new Float32Array(tr.target(k)); info.move = Math.min(tr.n, k); info.moves = tr.moves; info.solved = k >= tr.n;
+      if (!info.solved) info.help = this.helpCells(tr, k, scene.cols);
       if (o.celebrate !== undefined) { var t = o.celebrate; scene.lit = litAt(t); if (!this.reduced) { scene.spread = spreadAt(t); scene.seed = this.seed; scene.cubeTurn = -PI / 2 * turnAt(t); scene.glassT = t / 1000; scene.glass = glassPieces(this.seed, this.glassCount); if (t < 1200) scene.sweep = t / 1200; } }
-    } else if (beat === 'sizes') {
+    } else if (beat === 'play') {
       var N = o.size || 3;
       if (N !== 3 || o.clock === undefined) { tr = this.sizes[N]; scene.model = tr.md; scene.cols = new Float32Array(tr.target(0)); info.size = N; }
       else {
@@ -318,12 +349,97 @@
         info.size = 3; info.clock = cp.clock; info.clockRunning = cp.running;
       }
     } else {
-      tr = beat === 'hero' ? this.tracks.yours : beat === 'duel' ? this.tracks.duel : this.tracks.solved;
+      tr = this.tracks.solved;
       scene.model = tr.md; scene.cols = new Float32Array(tr.target(0));
     }
-    scene.yaw = this.yawFor(beat);
     return { scene: scene, info: info };
   };
+
+  // ---------- the twist: a finger on the cube turns the layer it holds (the app's gestures.ts) ----------
+  /** The finger lands. scene and lay are the cube as it was drawn; forgivePx is how far outside the cube a grip still counts (14 px for touch, 4 for a mouse). */
+  Story.prototype.twistBegin = function (scene, lay, x, y, forgivePx) {
+    if (this.tw) return null;
+    var hit = pick(scene, lay, x, y, forgivePx); if (!hit) return null;
+    this.tw = { hit: hit, lay: lay, x0: x, y0: y, on: false, angle: 0, target: null, samples: [] };
+    this.swayHold = true; return hit;
+  };
+  /** The finger has moved past the slop: the layer is chosen from the face it holds and the way it moves, as in the app. */
+  Story.prototype.twistStart = function (x, y) {
+    var tw = this.tw; if (!tw || tw.on) return; var hit = tw.hit, M = hit.M, lay = tw.lay;
+    var toScreen = function (p) { var r = project(M, p); return [r[0] * lay.W, r[1] * lay.H]; };
+    var p0 = toScreen(hit.point), dx = x - tw.x0, dy = y - tw.y0, dl = Math.hypot(dx, dy) || 1, best = null;
+    for (var a = 0; a < 3; a++) {
+      if (a === hit.axis) continue;
+      var q = hit.point.slice(); q[a] += 0.5; var p1 = toScreen(q), s = [p1[0] - p0[0], p1[1] - p0[1]], len = Math.hypot(s[0], s[1]); if (len < 1e-3) continue;
+      var score = (dx * s[0] + dy * s[1]) / (dl * len);
+      if (!best || Math.abs(score) > Math.abs(best.score)) best = { axis: a, score: score, screen: [s[0] / len, s[1] / len], pxPerUnit: len / 0.5 };
+    }
+    if (!best) return;
+    var dir = best.score >= 0 ? 1 : -1, tangent = [0, 0, 0], normal = [0, 0, 0]; tangent[best.axis] = dir; normal[hit.axis] = hit.sign;
+    // The layer turns about the axis that stands on both the face and the drag.
+    var rot = [normal[1] * tangent[2] - normal[2] * tangent[1], normal[2] * tangent[0] - normal[0] * tangent[2], normal[0] * tangent[1] - normal[1] * tangent[0]];
+    var axis = Math.abs(rot[0]) > 0.5 ? 0 : Math.abs(rot[1]) > 0.5 ? 1 : 2;
+    tw.axis = axis; tw.sign = rot[axis] > 0 ? 1 : -1; tw.layers = [hit.cubie[axis]]; tw.tangent = tangent; tw.normal = normal;
+    tw.screenDir = [best.screen[0] * dir, best.screen[1] * dir]; tw.pxPerUnit = best.pxPerUnit;
+    var q0 = this.planeHit(tw, tw.x0, tw.y0); tw.ref = dot3(q0 || hit.point, tangent); tw.on = true; tw.samples = [];
+    this.twistMove(x, y, now());
+  };
+  /** Where the finger's ray meets the plane of the face held, in the cube's own space (null when the face stands on edge). */
+  Story.prototype.planeHit = function (tw, x, y) {
+    var lay = tw.lay, Mi = tw.hit.Mi, nx = 2 * x / lay.W - 1, ny = 1 - 2 * y / lay.H;
+    var o = unproject(Mi, nx, ny, -1), f = unproject(Mi, nx, ny, 1), d = norm([f[0] - o[0], f[1] - o[1], f[2] - o[2]]), n = tw.normal, h = tw.hit.point;
+    var dn = dot3(d, n); if (Math.abs(dn) < 0.12) return null;
+    var t = dot3([h[0] - o[0], h[1] - o[1], h[2] - o[2]], n) / dn; return [o[0] + d[0] * t, o[1] + d[1] * t, o[2] + d[2] * t];
+  };
+  /** The angle follows the finger: how far it moved along the face, over the distance to the axis. */
+  Story.prototype.twistMove = function (x, y, t) {
+    var tw = this.tw; if (!tw || !tw.on) return;
+    var q = this.planeHit(tw, x, y), delta = q ? dot3(q, tw.tangent) - tw.ref : ((x - tw.x0) * tw.screenDir[0] + (y - tw.y0) * tw.screenDir[1]) / tw.pxPerUnit;
+    tw.angle = (delta / tw.hit.half) * tw.sign;
+    tw.samples.push({ t: t, a: tw.angle }); while (tw.samples.length > 2 && t - tw.samples[0].t > 90) tw.samples.shift();
+  };
+  /** The finger lifts. A flick takes the next quarter in its direction; otherwise the nearest quarter, nudged the way it was going (turns.ts releaseDrag). */
+  Story.prototype.twistEnd = function (t) {
+    var tw = this.tw; this.swayHold = false; if (!tw) return;
+    if (!tw.on) { this.tw = null; return; }
+    var v = 0, n = tw.samples.length;
+    if (n >= 2) { var f = tw.samples[0], l = tw.samples[n - 1], sp = (l.t - f.t) / 1000; if (sp >= 0.008 && t - l.t <= 70) v = (l.a - f.a) / sp; }
+    var a = tw.angle, Q = PI / 2, target;
+    if (Math.abs(v) > 3.2 && Math.abs(a) > 0.04) target = v > 0 ? Math.floor(a / Q + 0.02) * Q + Q : Math.ceil(a / Q - 0.02) * Q - Q;
+    else target = Math.round((a + v * 0.1) / Q) * Q;
+    tw.target = target; tw.on = false;
+  };
+  /** The gesture is taken away (the page scrolls, the finger is lost): a layer held springs back. */
+  Story.prototype.twistCancel = function () { var tw = this.tw; this.swayHold = false; if (!tw) return; if (tw.on) { tw.target = 0; tw.on = false; } else if (tw.target === null) this.tw = null; };
+  /** A turn from the keyboard: one quarter of a face, like a flick. */
+  Story.prototype.turnKey = function (face, prime) {
+    if (this.tw) return false;
+    var f = FACE[face], layers = [this.m3.outer * f[1]], turns = -f[1] * (prime ? -1 : 1);
+    this.tw = { hit: null, axis: f[0], sign: 1, layers: layers, angle: 0, target: turns * PI / 2, on: false, samples: [] };
+    return true;
+  };
+  /** The twist each frame: the layer follows the finger or springs to its quarter; a finished quarter becomes a move on your cube. Gives the turn to draw, or null. */
+  Story.prototype.twistTick = function (dt) {
+    var tw = this.tw; if (!tw || tw.axis === undefined) return null;
+    if (tw.target !== null) {
+      if (this.reduced) tw.angle = tw.target; else tw.angle += (tw.target - tw.angle) * (1 - Math.exp(-dt / 0.055));
+      if (Math.abs(tw.target - tw.angle) < 0.0035) {
+        var q = Math.round(tw.target / (PI / 2));
+        if (q !== 0) this.applyTwist(moveOf(tw.axis, tw.layers, q, this.m3));
+        this.tw = null; return null;
+      }
+    }
+    return { axis: tw.axis, layers: tw.layers, angle: tw.angle };
+  };
+  /** One move done on your cube: the colours move, the list grows, and Scan will solve this cube. */
+  Story.prototype.applyTwist = function (mv) {
+    var m3 = this.m3;
+    this.free.cols = permute(m3, this.free.cols, mv); pushMove(this.free.history, mv, m3);
+    this.freeTrack = new Track(m3, this.free.cols, []); this.scanT = null; this.turned = false; this.cele = null; this.glass = null;
+    this.twists++; this.justTwisted = true;
+  };
+  function now() { return typeof performance !== 'undefined' ? performance.now() : Date.now(); }
+  function dot3(a, b) { return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]; }
 
   // ---------- geometry ----------
   function roundedBox(h, r, k) {
@@ -559,6 +675,57 @@
     up.pop(); lo.pop(); return lo.concat(up);
   }
 
+  // ---------- picking: from a point on the screen to the face and the piece it lands on ----------
+  function inv4(m) {
+    var a00 = m[0], a01 = m[1], a02 = m[2], a03 = m[3], a10 = m[4], a11 = m[5], a12 = m[6], a13 = m[7], a20 = m[8], a21 = m[9], a22 = m[10], a23 = m[11], a30 = m[12], a31 = m[13], a32 = m[14], a33 = m[15];
+    var b00 = a00 * a11 - a01 * a10, b01 = a00 * a12 - a02 * a10, b02 = a00 * a13 - a03 * a10, b03 = a01 * a12 - a02 * a11, b04 = a01 * a13 - a03 * a11, b05 = a02 * a13 - a03 * a12;
+    var b06 = a20 * a31 - a21 * a30, b07 = a20 * a32 - a22 * a30, b08 = a20 * a33 - a23 * a30, b09 = a21 * a32 - a22 * a31, b10 = a21 * a33 - a23 * a31, b11 = a22 * a33 - a23 * a32;
+    var det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06; if (!det) return null; det = 1 / det;
+    var o = new Float64Array(16);
+    o[0] = (a11 * b11 - a12 * b10 + a13 * b09) * det; o[1] = (a02 * b10 - a01 * b11 - a03 * b09) * det; o[2] = (a31 * b05 - a32 * b04 + a33 * b03) * det; o[3] = (a22 * b04 - a21 * b05 - a23 * b03) * det;
+    o[4] = (a12 * b08 - a10 * b11 - a13 * b07) * det; o[5] = (a00 * b11 - a02 * b08 + a03 * b07) * det; o[6] = (a32 * b02 - a30 * b05 - a33 * b01) * det; o[7] = (a20 * b05 - a22 * b02 + a23 * b01) * det;
+    o[8] = (a10 * b10 - a11 * b08 + a13 * b06) * det; o[9] = (a01 * b08 - a00 * b10 - a03 * b06) * det; o[10] = (a30 * b04 - a31 * b02 + a33 * b00) * det; o[11] = (a21 * b02 - a20 * b04 - a23 * b00) * det;
+    o[12] = (a11 * b07 - a10 * b09 - a12 * b06) * det; o[13] = (a00 * b09 - a01 * b07 + a02 * b06) * det; o[14] = (a31 * b01 - a30 * b03 - a32 * b00) * det; o[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
+    return o;
+  }
+  /** A clip-space point back through Mi (the inverse of model-view-projection), as a point in the cube's own space. */
+  function unproject(Mi, nx, ny, nz) {
+    var x = Mi[0] * nx + Mi[4] * ny + Mi[8] * nz + Mi[12], y = Mi[1] * nx + Mi[5] * ny + Mi[9] * nz + Mi[13], z = Mi[2] * nx + Mi[6] * ny + Mi[10] * nz + Mi[14], w = Mi[3] * nx + Mi[7] * ny + Mi[11] * nz + Mi[15] || 1;
+    return [x / w, y / w, z / w];
+  }
+  /** A point in the cube's own space to the screen, as fractions of the stage (0..1 from the top left). */
+  function project(M, v) {
+    var x = M[0] * v[0] + M[4] * v[1] + M[8] * v[2] + M[12], y = M[1] * v[0] + M[5] * v[1] + M[9] * v[2] + M[13], w = M[3] * v[0] + M[7] * v[1] + M[11] * v[2] + M[15] || 1;
+    return [x / w * 0.5 + 0.5, 0.5 - y / w * 0.5];
+  }
+  /** The ray o + t·d meets the box |x|,|y|,|z| ≤ e: the point, the face (axis and sign) it enters through, or null. */
+  function slab(o, d, e) {
+    var tmin = -Infinity, tmax = Infinity, axis = -1, sign = 0;
+    for (var a = 0; a < 3; a++) {
+      if (Math.abs(d[a]) < 1e-9) { if (Math.abs(o[a]) > e) return null; continue; }
+      var t1 = (-e - o[a]) / d[a], t2 = (e - o[a]) / d[a], s = d[a] > 0 ? -1 : 1;
+      if (t1 > t2) { var tt = t1; t1 = t2; t2 = tt; }
+      if (t1 > tmin) { tmin = t1; axis = a; sign = s; }
+      if (t2 < tmax) tmax = t2;
+    }
+    if (tmin > tmax || axis < 0) return null;
+    return { point: [o[0] + d[0] * tmin, o[1] + d[1] * tmin, o[2] + d[2] * tmin], axis: axis, sign: sign };
+  }
+  /**
+   * What a point on the screen (CSS px in the stage) lands on: the face, the point on it and the piece (doubled coordinates), for the cube drawn with scene and lay.
+   * A grip up to forgivePx outside the cube counts as the nearest piece (the app's EDGE_FORGIVE_PX). Null when it misses.
+   */
+  function pick(scene, lay, x, y, forgivePx) {
+    var M = mul(viewProj(lay), cubeMatrix(scene)), Mi = inv4(M); if (!Mi) return null;
+    var md = scene.model || model(3), e = md.N / 2, nx = 2 * x / lay.W - 1, ny = 1 - 2 * y / lay.H;
+    var o = unproject(Mi, nx, ny, -1), f = unproject(Mi, nx, ny, 1), d = norm([f[0] - o[0], f[1] - o[1], f[2] - o[2]]);
+    var give = ((forgivePx || 0) * 2 * REACH * md.N) / (3 * Math.max(1, lay.S));
+    var hit = slab(o, d, e + give); if (!hit) return null;
+    var h = hit.point.map(function (c) { return Math.max(-e, Math.min(e, c)); });
+    var cubie = h.map(function (c) { var i = Math.max(0, Math.min(md.N - 1, Math.floor(c + e))); return -md.outer + 2 * i; });
+    return { axis: hit.axis, sign: hit.sign, point: h, cubie: cubie, M: M, Mi: Mi, half: e, md: md };
+  }
+
   function Renderer(canvas, o) {
     o = o || {};
     var gl = canvas.getContext('webgl', { alpha: true, antialias: true, premultipliedAlpha: true, preserveDrawingBuffer: !!o.preserve, depth: true, powerPreference: 'high-performance' });
@@ -668,7 +835,7 @@
   };
 
   G.KubeloCube = {
-    Renderer: Renderer, Story: Story, model: model, outline: outline, ALG: ALG, SYMBOL: SYMBOL, COLORS: COLORS, SIZES: SIZES,
-    MOODS: MOODS, parseAlg: parseAlg, version: 'r19'
+    Renderer: Renderer, Story: Story, model: model, outline: outline, pick: pick, symbolFor: symbolFor, moveOf: moveOf, pushMove: pushMove, ALG: ALG, COLORS: COLORS, SIZES: SIZES,
+    MOODS: MOODS, parseAlg: parseAlg, version: 'r21'
   };
 })(typeof window !== 'undefined' ? window : self);

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>
 /* Old links to the app: when the address carries one of the app's parameters (in ? or in the # of a duel link), go to the app before anything is drawn.
-   APP_PARAMS is the one list; build/landing-params.test.ts fails when the app reads a parameter that is not here. The page's own switches (scan, flow, reduced, hook) must not be here. */
+   APP_PARAMS is the one list; build/landing-params.test.ts fails when the app reads a parameter that is not here. The page's own switches (flow, reduced, hook) must not be here. */
 (function () {
   var APP_PARAMS = ['s', 't', 'n', 'stokk', 'dagens', 'dag', 'rekorder', 'laer', 'los', 'lang', 'watch', 'seed', 'tricks', 'step8', 'source', 'debug', 'testleder', 'ranked', 'learn', 'gfx', 'overgang'];
   try {
@@ -57,22 +57,23 @@
 <link rel="preload" href="site/sky-blue-p.webp" as="image" media="(max-aspect-ratio: 9/10)">
 <link rel="preload" href="site/sky-blue-l.webp" as="image" media="(min-aspect-ratio: 9/10)">
 <style>
-/* Kubelo, kubelo.app, round 19 «One evening». One cube, one evening: the light and the height move on as you scroll.
-   Stage mode: the sections stand still in a fixed stage and the scroll drives the story.
-   Flow mode (reduced motion, 200 % text, no room, no script): the sections flow as a normal page over the same sky. */
+/* Kubelo, kubelo.app, round 19 «One evening» and round 21 «Twist it». One cube, one evening: the light and the height move on as you scroll, in six beats.
+   The cube in the first beat can be twisted with a finger; Scan looks at that cube, locks on, lifts it into the evening and solves it.
+   Stage mode: the beats stand still in a fixed stage and the scroll drives the story.
+   Flow mode (reduced motion, 200 % text, no room, no script): the beats flow as a normal page over the same sky. */
 @font-face{font-family:'Schibsted Grotesk';font-style:normal;font-weight:500;font-display:swap;src:url(site/fonts/schibsted-grotesk-500.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 @font-face{font-family:'Schibsted Grotesk';font-style:normal;font-weight:600;font-display:swap;src:url(site/fonts/schibsted-grotesk-600.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 :root{color-scheme:dark}
 html,body{margin:0;background:#070b1e;color:#f3f1ec}
 body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
 /* --kz: skaleringen fra pc-modus-biten i <head> (1 uten). I «Side for datamaskiner» på en telefon zoomes siden, og da må vw, svh og lvh deles på --kz for å bli det de var. */
-.kl{--ink:#f3f1ec;--soft:#e2e0da;--muted:#c3c6cd;--halo-rgb:8,10,20;--vw:calc(1vw / var(--kz,1));--vh:calc(1svh / var(--kz,1));--stage-h:calc(100lvh / var(--kz,1));--pad:24px;--top:68px;
+.kl{--ink:#f3f1ec;--soft:#e2e0da;--muted:#c3c6cd;--ground:6,9,22;--vw:calc(1vw / var(--kz,1));--vh:calc(1svh / var(--kz,1));--stage-h:calc(100lvh / var(--kz,1));--pad:24px;--top:68px;
   position:relative;font-family:'Schibsted Grotesk',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ink);container-type:inline-size;container-name:kl}
 .kl *{box-sizing:border-box}
 .kl a{color:var(--ink);text-decoration:none}
 .kl a:focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:6px}
+.kl .grab:focus-visible{outline:2px solid rgba(243,241,236,.6);outline-offset:-8px;border-radius:32px}
 .kl h1,.kl h2,.kl p,.kl ol,.kl ul{margin:0;padding:0}
-.h{text-shadow:0 0 2px rgba(var(--halo-rgb),.95),0 0 4px rgba(var(--halo-rgb),.95),0 0 6px rgba(var(--halo-rgb),.9),0 0 8px rgba(var(--halo-rgb),.9),0 0 10px rgba(var(--halo-rgb),.85),0 0 14px rgba(var(--halo-rgb),.8),0 0 22px rgba(var(--halo-rgb),.55)}
 .num{font-variant-numeric:tabular-nums;letter-spacing:-.02em}
 .num .sep{font-variant-numeric:normal;font-feature-settings:"tnum" 0;margin:0 .01em}
 .nb{display:inline-block}
@@ -80,22 +81,20 @@ body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;-webkit-
 svg.ic{display:block;overflow:visible;fill:none;stroke-linecap:round;stroke-linejoin:round}
 svg.ic .hl{stroke:rgb(10,10,12)}
 
-/* ---------- the stage: sky, camera, cube, frame ---------- */
+/* ---------- the stage: sky, ground, camera, cube, frame ---------- */
 .stage{position:fixed;left:0;top:0;width:100%;height:var(--stage-h);overflow:hidden;background:#0b1230;z-index:0;pointer-events:none}
 .scene{position:absolute;inset:-7% 0;opacity:0;will-change:opacity,transform}
 .scene img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;display:block}
 .scene[data-scene="blue"]{opacity:1;inset:0 0 -14% 0}
-.dim{position:absolute;inset:0;opacity:0;background:#050817}
+/* The text's own ground (round 21, no glow on the letters): the sky darkens softly where the words stand, at the foot of the screen on a phone and along the left on a PC. */
+.ground{position:absolute;inset:0;background:linear-gradient(180deg,rgba(var(--ground),0) 38%,rgba(var(--ground),.36) 60%,rgba(var(--ground),.82) 100%);transition:opacity .5s ease}
+/* The end on a phone: the words stand higher (the button, the name and the lines under it), so the ground starts higher. */
+@container kl (max-width: 899px){.kl[data-beat="end"] .ground{background:linear-gradient(180deg,rgba(var(--ground),0) 14%,rgba(var(--ground),.5) 42%,rgba(var(--ground),.86) 100%)}}
 .vignette{position:absolute;inset:0;opacity:0;background:linear-gradient(180deg,rgba(6,9,22,0) 0%,rgba(6,9,22,0) 52%,rgba(6,9,22,.55) 78%,rgba(6,9,22,.86) 100%)}
 .cube{position:absolute;left:0;top:0;width:100%;height:100%;display:block}
 .cube{opacity:0;transition:opacity .4s cubic-bezier(.16,1,.3,1)}
-.camera{position:absolute;inset:0;opacity:0;background:radial-gradient(120% 80% at 50% 42%,#20283a 0%,#121722 55%,#090b11 100%)}
-.camera .shot{position:absolute;display:block;object-fit:cover;-webkit-mask-image:radial-gradient(closest-side,#000 74%,transparent 100%);mask-image:radial-gradient(closest-side,#000 74%,transparent 100%)}
-/* The photo's mask is a soft circle around the cube; placeCamera sets its size and place (--mask) from where the cube stands in the photo. */
-.camera .shot.photo{-webkit-mask-image:var(--mask,radial-gradient(closest-side,#000 74%,transparent 100%));mask-image:var(--mask,radial-gradient(closest-side,#000 74%,transparent 100%))}
-.kl[data-scan="reserve"] .frame{display:none}
-.kl[data-scan="reserve"] .camera{background:radial-gradient(120% 80% at 50% 44%,#2c3037 0%,#1d1f24 58%,#111216 100%)}
-.kl[data-scan="photo"] .camera .shot.reserve,.kl[data-scan="reserve"] .camera .shot.photo{display:none}
+/* Scan: the phone's camera looks at your cube (a dark viewfinder behind the real cube), then it sinks away as the cube lifts. */
+.camera{position:absolute;inset:0;opacity:0;background:radial-gradient(120% 80% at 50% 42%,#20283a 0%,#121722 55%,#090b11 100%);will-change:opacity,transform}
 .frame{position:absolute;inset:0;width:100%;height:100%;overflow:visible;opacity:0}
 .frame .f-glow{fill:rgba(243,241,236,.06);stroke:none}
 .frame .f-hl{fill:none;stroke:rgb(10,10,12);stroke-opacity:.32;stroke-width:5;stroke-linejoin:round}
@@ -117,13 +116,20 @@ svg.ic .hl{stroke:rgb(10,10,12)}
 .beat{position:relative;display:flex;flex-direction:column;gap:14px;min-height:calc(var(--vh) * 100);padding:var(--top) var(--pad) 22px;text-align:center}
 .visual{position:relative;flex:1 1 auto;min-height:0;display:flex;flex-direction:column;align-items:center}
 .slot{position:relative;flex:1 1 0;min-height:150px;width:100%;container-type:size}
-.poster{position:absolute;left:50%;top:50%;width:min(100cqw,100cqh);height:min(100cqw,100cqh);transform:translate(-50%,-50%);display:block;transition:opacity .4s cubic-bezier(.16,1,.3,1)}
+.poster{position:absolute;left:50%;top:50%;width:min(100cqw,100cqh);height:min(100cqw,100cqh);transform:translate(-50%,-50%);display:block;transition:opacity .4s cubic-bezier(.16,1,.3,1);pointer-events:none;-webkit-user-drag:none}
 .copy{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;flex:none}
-.d1{font-weight:600;font-size:clamp(1.5rem,calc(var(--vw) * 7),2.125rem);line-height:1.1;letter-spacing:-.022em;text-wrap:balance;max-width:16em}
+.d1{font-weight:600;font-size:clamp(1.75rem,calc(var(--vw) * 9),2.5rem);line-height:1.06;letter-spacing:-.024em;text-wrap:balance;max-width:16em}
 .d2{font-weight:600;font-size:clamp(1.5rem,calc(var(--vw) * 7),2rem);line-height:1.12;letter-spacing:-.02em;text-wrap:balance;max-width:16em}
 .lead{font-weight:500;font-size:1.0625rem;line-height:1.5;color:var(--soft);max-width:24em;text-wrap:balance}
 .small{font-weight:500;font-size:.875rem;line-height:1.4;color:var(--muted)}
-.cta{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:2px 22px;margin-top:6px}
+.cta{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 14px;margin-top:6px}
+
+/* hero: the cube you can twist. The slot takes the finger (a sideways drag turns a layer, an up-and-down one scrolls the page) and the arrow keys. */
+.grab{touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
+.grab.held{cursor:grabbing}
+.hint{display:inline-flex;align-items:center;gap:8px;height:24px;flex:none;opacity:0;transition:opacity .6s ease}
+.hint svg{width:18px;height:18px}
+.kl.live:not(.twisted) .hint{opacity:1;transition-delay:.9s}
 
 /* scan: the next move under the cube (the app's Help) */
 .help{display:flex;justify-content:center;gap:4px;height:62px;flex:none;opacity:0;transition:opacity .35s ease}
@@ -135,7 +141,7 @@ svg.ic .hl{stroke:rgb(10,10,12)}
 .help .cell.next{opacity:.72}
 .help .cell.later{opacity:.4}
 
-/* sizes: the clock above, the sizes below */
+/* play: the clock above, the sizes below */
 .clock{flex:none;font-weight:500;font-size:2.75rem;line-height:1.05;color:var(--muted);transition:color .3s ease,opacity .4s ease}
 .clock.off{opacity:0}
 .clock.on{color:var(--ink)}
@@ -145,14 +151,6 @@ svg.ic .hl{stroke:rgb(10,10,12)}
 .sizes span.on{color:var(--ink)}
 .sizes span.on::after{opacity:1}
 
-/* records and the leaderboard: the app's own screens (real captures, site/app-*.webp), cropped to the top on phones */
-.appshot{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(100cqw,calc(100cqh * .46));height:100cqh;margin:0;overflow:hidden;border-radius:22px;box-shadow:0 0 0 1px rgba(243,241,236,.3),0 14px 44px rgba(3,5,14,.55);background:#0b1230}
-.appshot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 0;display:block}
-@container kl (max-width: 899px){
-  .appshot{width:min(100cqw,calc(100cqh * .82));-webkit-mask-image:linear-gradient(180deg,#000 86%,transparent 100%);mask-image:linear-gradient(180deg,#000 86%,transparent 100%);box-shadow:none;border-radius:22px 22px 0 0}
-  .appshot::after{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(243,241,236,.3);-webkit-mask-image:linear-gradient(180deg,#000 60%,transparent 90%);mask-image:linear-gradient(180deg,#000 60%,transparent 90%)}
-}
-.b-records .slot,.b-board .slot{flex:1 1 0;min-height:150px}
 /* Google Play: closed test until PLAY_PUBLIC is true. Set data-play="open" on the .kl root (one line) when the app is out for everyone. */
 .kl[data-play="closed"] .play-open{display:none!important}
 .kl:not([data-play="closed"]) .play-closed{display:none!important}
@@ -160,21 +158,96 @@ svg.ic .hl{stroke:rgb(10,10,12)}
 .top .tester-cta{min-height:44px;padding:0 16px;font-size:.9375rem;gap:8px;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .3s ease,visibility 0s .3s}
 .kl.show-badge .top .tester-cta{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .45s cubic-bezier(.16,1,.3,1) .1s,visibility 0s}
 .tester-cta svg{width:20px;height:20px}
+/* the tour (round 21, part 5): the visitor's own button scrolls the page beat by beat. Secondary to «Become a tester»; the same outline as the app's «Watch the solve». */
+.tour-cta,.tour-pause{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:40px;padding:3px 13px;margin:0;border:1px solid rgba(243,241,236,.45);border-radius:999px;background:none;color:var(--soft);font:inherit;font-weight:500;font-size:.875rem;line-height:1.25;cursor:pointer;-webkit-appearance:none;appearance:none}
+.tour-cta svg,.tour-pause svg{width:18px;height:18px}
+.tour-cta:focus-visible,.tour-pause:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+/* the pause control: a round ⏸ in the middle of the top bar, the one place that is free on every beat */
+.tour-pause{position:fixed;left:50%;top:calc((var(--top) - 44px) / 2);transform:translateX(-50%);width:44px;height:44px;padding:0;border-radius:50%;z-index:4;color:var(--ink);border-color:rgba(243,241,236,.7);opacity:0;visibility:hidden;transition:opacity .3s ease,visibility 0s .3s}
+.tour-pause svg{width:20px;height:20px}
+.kl.touring .tour-pause{opacity:1;visibility:visible;transition:opacity .3s ease}
+.tour-pause[hidden]{display:inline-flex}
+/* flow mode (reduced motion, big text, no room): the page is an ordinary page, and nothing moves on its own */
+.kl.is-flow .tour-cta{display:none}
 
-/* the duel */
-.duel{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 28px;flex:none}
-.duel div{display:flex;flex-direction:column;align-items:center}
-.duel .who{font-weight:600;font-size:.9375rem;line-height:1.2}
-.duel .t{font-weight:500;font-size:2.875rem;line-height:1.05}
-.duel .them{color:var(--muted)}
+/* records: Records 3 as the app shows it (src/ui/records, src/ui/records/sky), drawn with the page's own means in the sky: You with Personal best, the trend, the graph and the goal; World with No. 1 this week and the list. The scroll moves the app's own tabs. */
+.rec{position:absolute;inset:0;width:100%;max-width:340px;margin:0 auto;text-align:left;color:var(--ink);font-weight:500;line-height:20px;overflow-wrap:anywhere}
+.rec *{min-width:0}
+.rec-tabs{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 22px;font-weight:600;font-size:1.0625rem;line-height:22px;padding-bottom:6px}
+.rec-tab{position:relative;color:var(--muted);transition:color .35s ease}
+.rec-tab::after{content:'';position:absolute;left:0;right:0;bottom:-7px;height:2px;border-radius:1px;background:var(--ink);opacity:0;transition:opacity .35s ease}
+.rec[data-side="you"] .rec-tab.you,.rec[data-side="world"] .rec-tab.world{color:var(--ink)}
+.rec[data-side="you"] .rec-tab.you::after,.rec[data-side="world"] .rec-tab.world::after{opacity:1}
+.rec-size{margin-left:auto;display:inline-flex;align-items:center;gap:4px;font-weight:600}
+.rec-size svg{width:16px;height:16px}
+.rec-you,.rec-world{position:absolute;left:0;right:0;top:40px;bottom:0;display:flex;flex-direction:column;justify-content:flex-start;gap:4px;opacity:0;transition:opacity .4s ease;overflow:hidden}
+.rec[data-side="you"] .rec-you,.rec[data-side="world"] .rec-world{opacity:1}
+.rec-label{display:flex;align-items:center;gap:8px;font-size:.9375rem;color:var(--soft)}
+.rec-label i{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--ink)}
+.rec-big{font-weight:600;font-size:3rem;line-height:48px;letter-spacing:-.03em;margin-top:2px}
+.rec-name{font-weight:600;font-size:1.5rem;line-height:28px}
+.rec-when{font-size:.9375rem;color:var(--soft)}
+.rec-trend{font-weight:600;font-size:1.125rem;line-height:23px;margin:8px 0 6px;max-width:16em}
+.rc-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:2px 12px;font-size:.8125rem;line-height:16px;font-weight:600}
+.rc-range{display:inline-flex;gap:8px;color:var(--muted)}
+.rc-range b{color:var(--ink);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:6px}
+.rc-svg{display:block;width:100%;height:112px;overflow:visible}
+.rc-svg .grid{stroke:var(--ink);stroke-opacity:.3;stroke-width:1}
+.rc-svg text{fill:var(--soft);font-family:inherit;font-weight:500;font-size:12px}
+.rc-svg .dot{fill:var(--ink);fill-opacity:.85}
+.rc-svg .line{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linejoin:round}
+.rc-svg .ring{fill:none;stroke:var(--ink);stroke-width:1.5}
+.rc-dates{display:flex;justify-content:space-between;font-size:.8125rem;line-height:16px;color:var(--soft);padding:0 0 0 44px}
+.rec-goal{font-weight:600;font-size:.9375rem;margin-top:8px}
+.rec-goalline{display:flex;align-items:center;gap:10px;font-size:.8125rem;color:var(--soft)}
+.rec-goalline .bar{flex:1;position:relative;height:2px;background:rgba(243,241,236,.45);border-radius:1px}
+.rec-goalline .bar i{position:absolute;left:34%;top:50%;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;background:var(--ink)}
+.rec-avg{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:8px}
+.rec-avg div{display:flex;flex-direction:column;gap:2px;font-size:.8125rem;line-height:16px;color:var(--soft)}
+.rec-avg b{font-weight:600;font-size:1.375rem;line-height:24px;color:var(--ink)}
+.rec-pill{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;max-width:100%;min-height:34px;padding:3px 16px;border:1px solid rgba(243,241,236,.7);border-radius:999px;font-weight:600;font-size:.9375rem;line-height:18px;margin:2px 0}
+.rec-pill svg{width:16px;height:16px}
+.rec-rows{list-style:none;margin:2px 0 0;padding:0;display:flex;flex-direction:column}
+.rec-rows li{display:grid;grid-template-columns:28px minmax(0,1fr) auto 34px;column-gap:10px;align-items:center;min-height:28px;padding:1px 0;border-top:1px solid rgba(243,241,236,.22);font-size:.9375rem}
+.rec-rows .gap{min-height:22px}
+.rec-rows .gap .short{display:none}
+.rec-rows .n{color:var(--soft);font-variant-numeric:tabular-nums}
+.rec-rows .who{font-weight:600;display:flex;flex-direction:column;line-height:17px}
+.rec-rows .who small{font-weight:500;font-size:.8125rem;line-height:16px;color:var(--soft)}
+.rec-rows .t{font-weight:600;justify-self:end}
+.rec-rows .d{color:var(--soft);font-size:.8125rem;line-height:16px;text-align:right}
+.rec-rows .gap .n{font-weight:600;color:var(--ink)}
+.rec-rows .you .n i{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--ink);font-style:normal;font-weight:600;color:var(--ink);font-size:.8125rem}
+.rec-foot{font-size:.8125rem;line-height:18px;color:var(--muted);margin-top:2px;max-width:22em}
+.rec-world .rec-pill:last-child{margin-top:0}
+/* A short slot (320 × 640 and other small phones): the same structure, condensed. The slot is a size container, so this follows its height, not the window's. */
+@container (max-height: 440px){
+  .rec-you,.rec-world{zoom:.82}
+  .rec-big{font-size:2.5rem;line-height:40px}
+  .rec-name{font-size:1.25rem;line-height:24px}
+  .rec-trend{margin:2px 0 0}
+  .rc-svg{height:76px}
+  .rec-avg{margin-top:4px}
+  .rec-rows .row4,.rec-rows .row5{display:none}
+  .rec-rows .gap .long{display:none}
+  .rec-rows .gap .short{display:inline}
+  .rec-rows li{min-height:28px;padding:1px 0}
+  .rec-foot{margin-top:4px}
+}
+/* flow mode: You and World stand after each other, both tabs lit */
+.kl.is-flow .b-records .slot{flex:none;min-height:0;height:auto;container-type:normal}
+.kl.is-flow .rec{position:relative;inset:auto}
+.kl.is-flow .rec-you,.kl.is-flow .rec-world{position:static;opacity:1;overflow:visible;margin-top:10px}
+.kl.is-flow .rec-tab{color:var(--ink)}
 
-/* choose your view: the place you are above lights up in the line */
+/* earth: the place you are above lights up in the line */
 .lead .pl{transition:color .5s ease}
 .lead.places .pl{color:var(--soft);text-decoration:underline;text-decoration-color:transparent;text-decoration-thickness:1.5px;text-underline-offset:5px;transition:color .5s ease,text-decoration-color .5s ease}
 .lead.places .pl.on{color:var(--ink);text-decoration-color:rgba(243,241,236,.8)}
 
 /* the end */
 .b-end .copy{gap:6px}
+.b-end .lead{margin-bottom:4px}
 .b-end .wm{font-weight:500;font-size:1.75rem;letter-spacing:.22em;margin:14px -.22em 0 0}
 .b-end nav{display:flex;flex-wrap:wrap;justify-content:center;gap:0 4px;margin:0 -14px}
 .b-end nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px;font-weight:500;font-size:.875rem}
@@ -182,10 +255,6 @@ svg.ic .hl{stroke:rgb(10,10,12)}
 @container kl (max-width: 359px){.b-end nav{gap:0 14px}.b-end nav span{display:none}}
 .b-end .made{font-weight:600;font-size:.8125rem;letter-spacing:.02em;color:var(--soft)}
 .b-end .legal{font-weight:500;font-size:.8125rem;line-height:1.4;color:var(--muted);max-width:30em}
-
-/* phone order: copy on top where the light is bright below */
-.b-records .copy,.b-board .copy,.b-free .copy{order:-1}
-.b-records,.b-board,.b-free{padding-top:calc(var(--top) + 4px)}
 
 /* short phones (640–700 px): the same page, a little denser. Samme blokk står under .kl.kort: i PC-modus på en telefon ser media-spørringen 980 px og en for høy side, så skriptet setter .kort selv (setShort). Blokkene må være like; build/pc-modus.test.ts sjekker det. */
 @media (max-height: 700px) and (max-width: 899px){
@@ -195,8 +264,6 @@ svg.ic .hl{stroke:rgb(10,10,12)}
   .lead{line-height:1.42}
   .help{height:52px}.help .cell{gap:6px}
   .clock{font-size:2.25rem}
-  .b-records .slot,.b-board .slot{min-height:120px}
-  .duel .t{font-size:2.75rem}
   .badge img{height:60px}
 }
 :where(.kl.kort) > *{--top:58px;--pad:20px}
@@ -206,41 +273,43 @@ svg.ic .hl{stroke:rgb(10,10,12)}
 :where(.kl.kort) .help{height:52px}
 :where(.kl.kort) .help .cell{gap:6px}
 :where(.kl.kort) .clock{font-size:2.25rem}
-:where(.kl.kort) .b-records .slot,:where(.kl.kort) .b-board .slot{min-height:120px}
-:where(.kl.kort) .duel .t{font-size:2.75rem}
 :where(.kl.kort) .badge img{height:60px}
 
 /* ---------- stage mode ---------- */
 .kl.is-stage .beats{position:fixed;left:0;top:0;width:100%;height:calc(var(--vh) * 100)}
 .kl.is-stage .beat{position:absolute;inset:0;min-height:0;opacity:0;pointer-events:none}
 .kl.is-stage .beat.on{pointer-events:auto}
-.kl.is-stage .beat.on .slot,.kl.is-stage .beat.on .visual{pointer-events:none}
+.kl.is-stage .beat.on .slot:not(.grab),.kl.is-stage .beat.on .visual{pointer-events:none}
+.kl.is-stage .beat.on .grab{pointer-events:auto}
 .track{display:none}
 .kl.is-stage .track{display:block;position:relative;pointer-events:none}
+/* flow mode: the ground follows each block of words instead of the screen */
+.kl.is-flow .ground{display:none}
+.kl.is-flow .copy{padding:22px 18px 18px;margin:0 -18px;background:radial-gradient(closest-side,rgba(var(--ground),.62) 0%,rgba(var(--ground),.44) 55%,rgba(var(--ground),0) 100%)}
 .kl.is-flow .beat[data-beat="hero"] ~ .beat{border-top:0}
 
 /* ---------- PC: its own composition ---------- */
 @container kl (min-width: 900px){
   .kl > *{--pad:clamp(40px,calc(var(--vw) * 6.4),120px);--top:84px}
   .wordmark{font-size:18px}
-  .beat{display:grid;grid-template-columns:minmax(0,46fr) minmax(0,54fr);grid-template-rows:minmax(0,1fr);column-gap:calc(var(--vw) * 3);align-items:stretch;padding:calc(var(--top) + 8px) var(--pad) calc(var(--vh) * 6);text-align:left}
+  .ground{background:linear-gradient(90deg,rgba(var(--ground),.7) 0%,rgba(var(--ground),.42) 30%,rgba(var(--ground),0) 58%)}
+  .beat{display:grid;grid-template-columns:minmax(0,44fr) minmax(0,56fr);grid-template-rows:minmax(0,1fr);column-gap:calc(var(--vw) * 2.5);align-items:stretch;padding:calc(var(--top) + 8px) var(--pad) calc(var(--vh) * 6);text-align:left}
   .copy{grid-column:1;grid-row:1;align-self:center;align-items:flex-start;gap:22px;padding-bottom:calc(var(--vh) * 2)}
   .visual{grid-column:2;grid-row:1;align-self:stretch}
-  .b-records .copy,.b-board .copy,.b-free .copy{order:0}
-  .b-records,.b-board,.b-free{padding-top:calc(var(--top) + 8px)}
-  .d1{font-size:clamp(3rem,calc(var(--vw) * 4.6),5.5rem);line-height:1.02;letter-spacing:-.032em;max-width:9.6em}
+  .kl.is-flow .copy{padding:30px 26px;margin:0 -26px}
+  .d1{font-size:clamp(3.25rem,calc(var(--vw) * 5.2),6rem);line-height:1.0;letter-spacing:-.034em;max-width:9em}
   .d2{font-size:clamp(2.75rem,calc(var(--vw) * 4.9),5.5rem);line-height:1.02;letter-spacing:-.03em;max-width:9em}
   .lead{font-size:1.375rem;line-height:1.45;max-width:22em}
   .small{font-size:1rem}
   .cta{justify-content:flex-start;gap:6px 30px;margin-top:10px}
+  .tour-cta{font-size:1rem}
   .badge img{height:72px}
   .clock{font-size:3.5rem}
   .help{height:76px;gap:10px}.help .cell{width:52px}.help .cell svg{width:30px;height:30px}
-  .duel{order:-1;justify-content:flex-start;gap:48px;margin-bottom:6px}
-  .duel div{align-items:flex-start}
-  .duel .who{font-size:1.0625rem}
-  .duel .t{font-size:clamp(3.5rem,calc(var(--vw) * 4.6),5rem)}
-  .b-duel .copy{gap:18px}
+  .hint{height:28px}
+  .rec{max-width:400px}
+  .rec-big{font-size:3.5rem;line-height:56px}
+  .rc-svg{height:140px}
   .b-end .copy{gap:10px}
   .b-end .wm{font-size:2.75rem;margin-top:28px}
   .b-end nav{justify-content:flex-start;margin:0 0 0 -6px}
@@ -249,11 +318,13 @@ svg.ic .hl{stroke:rgb(10,10,12)}
 </style>
 </head>
 <body>
-<div class="kl is-flow" id="top" data-scan="reserve" data-play="closed">
+<div class="kl is-flow" id="top" data-play="closed">
 <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
 <symbol id="i-arrow" viewBox="0 0 24 24"><g class="hl"><path d="M5 12h14M12 5l7 7-7 7" stroke-opacity=".12" stroke-width="10"></path><path d="M5 12h14M12 5l7 7-7 7" stroke-opacity=".32" stroke-width="5.4"></path></g><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="1.75"></path></symbol>
 <symbol id="i-cw" viewBox="-2 -2 28 28"><g class="hl"><path d="M4.6 15.4A7.4 7.4 0 1 1 19.3 15.4M24.2 11.6L19.3 15.4L15.7 10.4" stroke-opacity=".12" stroke-width="10"></path><path d="M4.6 15.4A7.4 7.4 0 1 1 19.3 15.4M24.2 11.6L19.3 15.4L15.7 10.4" stroke-opacity=".32" stroke-width="5.4"></path></g><path d="M4.6 15.4A7.4 7.4 0 1 1 19.3 15.4M24.2 11.6L19.3 15.4L15.7 10.4" stroke="currentColor" stroke-width="1.75"></path></symbol>
 <symbol id="i-ccw" viewBox="-2 -2 28 28"><g class="hl"><path d="M19.4 15.4A7.4 7.4 0 1 0 4.7 15.4M-0.2 11.6L4.7 15.4L8.3 10.4" stroke-opacity=".12" stroke-width="10"></path><path d="M19.4 15.4A7.4 7.4 0 1 0 4.7 15.4M-0.2 11.6L4.7 15.4L8.3 10.4" stroke-opacity=".32" stroke-width="5.4"></path></g><path d="M19.4 15.4A7.4 7.4 0 1 0 4.7 15.4M-0.2 11.6L4.7 15.4L8.3 10.4" stroke="currentColor" stroke-width="1.75"></path></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10-6.5z" stroke="currentColor" stroke-width="1.75" fill="none" stroke-linejoin="round"></path></symbol>
+<symbol id="i-turn" viewBox="0 0 24 24"><g class="hl"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 2.5v4.2h-4.2M6 21.5v-4.2h4.2" stroke-opacity=".12" stroke-width="10"></path><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 2.5v4.2h-4.2M6 21.5v-4.2h4.2" stroke-opacity=".32" stroke-width="5.4"></path></g><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 2.5v4.2h-4.2M6 21.5v-4.2h4.2" stroke="currentColor" stroke-width="1.75"></path></symbol>
 </svg>
 
 <div class="stage" aria-hidden="true">
@@ -264,37 +335,41 @@ svg.ic .hl{stroke:rgb(10,10,12)}
 <div class="scene" data-scene="earth"><img alt="" decoding="async" data-p="site/sky-earth-p.webp" data-l="site/sky-earth-l.webp"></div>
 <div class="scene" data-scene="rise"><img alt="" decoding="async" data-p="site/sky-rise-p.webp" data-l="site/sky-rise-l.webp"></div>
 <div class="scene" data-scene="morning"><img alt="" decoding="async" data-p="site/sky-morning-p.webp" data-l="site/sky-morning-l.webp"></div>
-<div class="dim"></div>
+<div class="ground"></div>
 <div class="vignette"></div>
-<div class="camera">
-<img class="shot reserve" alt="" decoding="async" data-src="site/scan-found.webp">
-</div>
+<div class="camera"></div>
 <canvas class="cube"></canvas>
 <svg class="frame"><polygon class="f-glow" points=""></polygon><polygon class="f-hl" points=""></polygon><polygon class="f-line" points=""></polygon><g class="f-edges"><line class="f-edge"></line><line class="f-edge"></line><line class="f-edge"></line></g></svg>
 </div>
 
 <header class="top">
-<a class="wordmark h" href="#top" aria-label="Kubelo, back to the top">KUBELO</a>
-<a class="tester-cta play-closed h" href="/tester/" tabindex="-1"><span>Become a tester</span></a>
+<a class="wordmark" href="#top" aria-label="Kubelo, back to the top">KUBELO</a>
+<a class="tester-cta play-closed" href="/tester/" tabindex="-1"><span>Become a tester</span></a>
 <a class="badge play-open" href="https://play.google.com/store/apps/details?id=app.kubelo" tabindex="-1"><img src="site/google-play-badge.png" width="155" height="60" alt="Get it on Google Play" loading="lazy"></a>
 </header>
 
+<button type="button" class="tour-pause" aria-label="Pause" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13M16 5.5v13" stroke="currentColor" stroke-width="1.75"></path></svg></button>
+
 <main class="beats">
 <section class="beat b-hero on" data-beat="hero" aria-labelledby="t-hero">
-<div class="visual"><div class="slot"><img class="poster" src="site/cube-poster.webp" srcset="site/cube-poster.webp 600w, site/cube-poster-1200.webp 1200w" sizes="(min-width: 900px) 46vw, 80vw" width="600" height="600" alt="A mixed-up cube floating above the sea at dusk." fetchpriority="high"></div></div>
+<div class="visual">
+<div class="slot grab" tabindex="0" role="group" aria-label="Your cube, a mixed-up 3×3. Drag to turn part of it, or use the arrow keys." aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"><img class="poster" src="site/cube-poster.webp" srcset="site/cube-poster.webp 600w, site/cube-poster-1200.webp 1200w" sizes="(min-width: 900px) 46vw, 80vw" width="600" height="600" alt="" fetchpriority="high" draggable="false"></div>
+<p class="hint small" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><use href="#i-turn"></use></svg><span>Drag to turn</span></p>
+</div>
 <div class="copy">
-<h1 class="d1 h" id="t-hero"><span class="nb">Scan your cube.</span> <span class="nb">Solve it on the screen.</span></h1>
-<p class="lead h">A 3D cube on your phone, with a timer and duels. Free, with no account and no ads.</p>
+<h1 class="d1" id="t-hero"><span class="nb">Go on.</span> <span class="nb">Twist it.</span></h1>
+<p class="lead">Kubelo is a 3D cube on your phone. Scan your own 3×3 and solve it on the screen, one move at a time. Time your solves and duel a friend. Free, with no account and no ads.</p>
 <div class="cta">
-<a class="tester-cta play-closed h" href="/tester/"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"></use></svg><span>Become a tester</span></a>
+<a class="tester-cta play-closed" href="/tester/"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"></use></svg><span>Become a tester</span></a>
 <a class="badge play-open" href="https://play.google.com/store/apps/details?id=app.kubelo"><img src="site/google-play-badge.png" width="165" height="64" alt="Get it on Google Play" loading="lazy"></a>
+<button type="button" class="tour-cta"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-play"></use></svg><span>Show me</span></button>
 </div>
 </div>
 </section>
 
 <section class="beat b-scan" data-beat="scan" aria-labelledby="t-scan">
 <div class="visual">
-<div class="slot" role="img" aria-label="A hand holds a mixed-up cube up to the phone camera, inside a square frame. Then the scanned cube on the screen, and the same cube in Play, with an arrow under it that shows the next move."></div>
+<div class="slot" role="img" aria-label="The scanned cube on the screen, half solved, with arrows under it that show the next move." data-label-flow="The scanned cube on the screen, half solved, with arrows under it that show the next move." data-label-stage="The phone's camera looks at the mixed-up cube inside a frame. The frame locks on, the cube lifts into the evening sky, and arrows under it show the next move until it is solved."></div>
 <div class="help" aria-hidden="true">
 <div class="cell"><svg class="ic" viewBox="0 0 24 24"><use href="#i-arrow"></use></svg><i></i></div>
 <div class="cell"><svg class="ic" viewBox="0 0 24 24"><use href="#i-arrow"></use></svg><i></i></div>
@@ -304,105 +379,116 @@ svg.ic .hl{stroke:rgb(10,10,12)}
 </div>
 </div>
 <div class="copy">
-<h2 class="d2 h" id="t-scan">This is your cube</h2>
-<p class="lead h">Hold up your mixed-up 3×3, and the camera reads the colors. Then play that same cube on the screen, and Help shows the next move until it is solved.</p>
-<p class="small h">No photos are saved or sent.</p>
+<h2 class="d2" id="t-scan">This is your cube</h2>
+<p class="lead">Hold up your mixed-up 3×3, and the camera reads the colors. Then play that same cube on the screen, and Help shows the next move until it is solved.</p>
+<p class="small">No photos are saved or sent.</p>
 </div>
 </section>
 
-<section class="beat b-sizes" data-beat="sizes" aria-labelledby="t-sizes">
+<section class="beat b-play" data-beat="play" aria-labelledby="t-play">
 <div class="visual">
-<p class="clock num h" aria-hidden="true">0<span class="sep">.</span>00</p>
+<p class="clock num" aria-hidden="true">0<span class="sep">.</span>00</p>
 <div class="slot" role="img" aria-label="A 3×3 cube on a calm sky, with the clock running above it."></div>
-<p class="sizes h" aria-hidden="true"><span>2×2</span><span class="on">3×3</span><span>4×4</span><span>5×5</span><span>6×6</span><span>7×7</span></p>
+<p class="sizes" aria-hidden="true"><span>2×2</span><span class="on">3×3</span><span>4×4</span><span>5×5</span><span>6×6</span><span>7×7</span></p>
 </div>
 <div class="copy">
-<h2 class="d2 h" id="t-sizes">From 2×2 to 7×7</h2>
-<p class="lead h">Drag to turn the cube. Tap Scramble, and the clock starts with your first turn.</p>
+<h2 class="d2" id="t-play">From 2×2 to 7×7</h2>
+<p class="lead">Drag to turn the cube. Tap Scramble, and the clock starts with your first turn.</p>
 </div>
 </section>
 
 <section class="beat b-records" data-beat="records" aria-labelledby="t-records">
-<div class="visual"><div class="slot"><figure class="appshot"><img data-src="site/app-records.webp" width="720" height="1560" alt="The Records screen in Kubelo: your fastest time at the top with a Watch button, a graph of your solves, and your next goal and averages below." decoding="async"></figure></div></div>
+<div class="visual">
+<div class="slot" role="img" aria-label="Records in Kubelo. You: Personal best 18.31, 27 s faster than when you started, the graph of your solves, Under 15 s · 3.31 to go, and the averages. World: No. 1 this week, Lumi with 10.48, the list of places, and you at No. 23.">
+<div class="rec" aria-hidden="true" data-side="you">
+<div class="rec-tabs"><span class="rec-tab you">You</span><span class="rec-tab world">World</span><span class="rec-size">3×3<svg class="ic" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.75"></path></svg></span></div>
+<div class="rec-you">
+<p class="rec-label"><i></i>Personal best</p>
+<p class="rec-big num">18<span class="sep">.</span>31</p>
+<p class="rec-when">Today 15:47</p>
+<p class="rec-trend">27 s faster than when you started.</p>
+<div class="rc-head"><span class="rc-faster">Faster ↑</span><span class="rc-range"><b>30</b><span>·</span>100<span>·</span>All</span></div>
+<svg class="rc-svg" viewBox="0 0 312 150" preserveAspectRatio="none"></svg>
+<div class="rc-dates"><span>3 Jun</span><span>Today</span></div>
+<p class="rec-goal">Under 15 s · 3.31 to go</p>
+<div class="rec-goalline"><span>20 s</span><span class="bar"><i></i></span><span>15 s</span></div>
+<div class="rec-avg"><div><span>Average of 5</span><b class="num">19<span class="sep">.</span>17</b></div><div><span>Average of 12</span><b class="num">19<span class="sep">.</span>96</b></div><div><span>Solves</span><b class="num">40</b></div></div>
+</div>
+<div class="rec-world">
+<p class="rec-label">No. 1 this week</p>
+<p class="rec-big num">10<span class="sep">.</span>48</p>
+<p class="rec-name">Lumi</p>
+<p class="rec-when">Wed · 45 moves · 4.3 TPS</p>
+<p class="rec-pill"><svg class="ic" viewBox="0 0 24 24"><use href="#i-play"></use></svg>Watch the solve</p>
+<ol class="rec-rows">
+<li><span class="n">2</span><span class="who">Kestrel</span><span class="t num">11<span class="sep">.</span>06</span><span class="d">Mon</span></li>
+<li><span class="n">3</span><span class="who">Juno</span><span class="t num">11<span class="sep">.</span>72</span><span class="d">Thu</span></li>
+<li class="row4"><span class="n">4</span><span class="who">Mika</span><span class="t num">12<span class="sep">.</span>31</span><span class="d">Tue</span></li>
+<li class="row5"><span class="n">5</span><span class="who">Pine Twist</span><span class="t num">12<span class="sep">.</span>88</span><span class="d">Mon</span></li>
+<li class="gap"><span class="n">⋮</span><span class="who"><span class="long">No. 6–22</span><span class="short">No. 4–22</span></span></li>
+<li class="you"><span class="n"><i>23</i></span><span class="who">Swift Corner 27<small>You · 0.62 to No. 22</small></span><span class="t num">18<span class="sep">.</span>40</span><span class="d">Wed</span></li>
+</ol>
+<p class="rec-foot">A new week starts on Monday. Every posted solve is replayed and checked.</p>
+<p class="rec-pill"><svg class="ic" viewBox="0 0 24 24"><use href="#i-play"></use></svg>Play for the leaderboard</p>
+</div>
+</div>
+</div>
+</div>
 <div class="copy">
-<h2 class="d2 h" id="t-records">See your progress</h2>
-<p class="lead h">Your best time sits at the top, and Watch plays that solve again, move by move. A graph shows how you are doing, with your next goal and your averages below.</p>
+<h2 class="d2" id="t-records">See your progress</h2>
+<p class="lead">Send your cube to a friend as a link and compare times. Your best time sits at the top of Records, with a graph of your solves. World, the leaderboard, shows the top 100 this week and of all time, and our server replays and checks every posted solve.</p>
 </div>
 </section>
 
-<section class="beat b-board" data-beat="board" aria-labelledby="t-board">
-<div class="visual"><div class="slot"><figure class="appshot"><img data-src="site/app-world.webp" width="720" height="1560" alt="The World screen in Kubelo: the top 100 this week and of all time, with a way to watch each solve and see how many you are faster than." decoding="async"></figure></div></div>
-<div class="copy">
-<h2 class="d2 h" id="t-board">Join the leaderboard</h2>
-<p class="lead h">Post a ranked 3×3 time if you want to. See the top 100 this week and of all time, watch the fastest solves, and see how many you are faster than. Every posted solve is replayed and checked.</p>
-</div>
-</section>
-
-<section class="beat b-duel" data-beat="duel" aria-labelledby="t-duel">
-<div class="visual"><div class="slot"></div></div>
-<div class="copy">
-<div class="duel h" role="img" aria-label="Two times side by side: You 15.17, Ingrid 15.94. You win by 0.77 s."><div><span class="who">You</span><span class="t num">15<span class="sep">.</span>17</span></div><div class="them"><span class="who">Ingrid</span><span class="t num">15<span class="sep">.</span>94</span></div></div>
-<h2 class="d2 h" id="t-duel">You win by 0.77 s.</h2>
-<p class="lead h">Send a friend the same cube as a link. They play it on their phone, or copy it on their own cube, and you compare times.</p>
-</div>
-</section>
-
-<section class="beat b-views" data-beat="views" aria-labelledby="t-views">
+<section class="beat b-earth" data-beat="earth" aria-labelledby="t-earth">
 <div class="visual"><div class="slot" role="img" aria-label="The same cube above the clouds, above the sea and above the Earth."></div></div>
 <div class="copy">
-<h2 class="d2 h" id="t-views">Choose your view</h2>
-<p class="lead h"><span class="pl" data-place="clouds">Above the clouds</span>, <span class="pl" data-place="sea">above the sea</span>, or <span class="pl" data-place="earth">above the Earth</span>.</p>
+<h2 class="d2" id="t-earth">Choose your view</h2>
+<p class="lead"><span class="pl" data-place="clouds">Above the clouds</span>, <span class="pl" data-place="sea">above the sea</span>, or <span class="pl" data-place="earth">above the Earth</span>.</p>
 </div>
 </section>
 
-<section class="beat b-free" data-beat="free" aria-labelledby="t-free">
+<footer class="beat b-end" data-beat="end" aria-labelledby="t-end">
 <div class="visual"><div class="slot"></div></div>
 <div class="copy">
-<h2 class="d2 h" id="t-free">Free, and yours</h2>
-<p class="lead h">No account. No ads. Your times stay on your phone. If you join the leaderboard, your name, the solves you post and any reports you make are sent.</p>
-</div>
-</section>
-
-<footer class="beat b-end" data-beat="end">
-<div class="visual"><div class="slot"></div></div>
-<div class="copy">
+<h2 class="d2" id="t-end">Free, and yours</h2>
+<p class="lead">No account. No ads. Your times stay on your phone. If you join the leaderboard, your name, the solves you post and any reports you make are sent.</p>
 <div class="cta">
-<a class="tester-cta play-closed h" href="/tester/"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"></use></svg><span>Become a tester</span></a>
+<a class="tester-cta play-closed" href="/tester/"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"></use></svg><span>Become a tester</span></a>
 <a class="badge play-open" href="https://play.google.com/store/apps/details?id=app.kubelo"><img src="site/google-play-badge.png" width="165" height="64" alt="Get it on Google Play" loading="lazy"></a>
 </div>
-<p class="wm h" role="img" aria-label="Kubelo">KUBELO</p>
-<nav aria-label="About Kubelo"><a class="h" href="privacy.html">Privacy policy</a><span aria-hidden="true">·</span><a class="h" href="leaderboard-rules.html">Leaderboard rules</a><span aria-hidden="true">·</span><a class="h" href="mailto:kontakt@kubelo.app">Contact</a></nav>
-<p class="made h">Made in Norway.</p>
-<p class="legal play-open h">Google Play and the Google Play logo are trademarks of Google&nbsp;LLC.</p>
-<p class="legal h">Earth imagery: NASA Earth Observatory and NASA Goddard Space Flight Center. Kubelo is not endorsed by NASA.</p>
+<p class="wm" role="img" aria-label="Kubelo">KUBELO</p>
+<nav aria-label="About Kubelo"><a href="privacy.html">Privacy policy</a><span aria-hidden="true">·</span><a href="leaderboard-rules.html">Leaderboard rules</a><span aria-hidden="true">·</span><a href="mailto:kontakt@kubelo.app">Contact</a></nav>
+<p class="made">Made in Norway.</p>
+<p class="legal play-open">Google Play and the Google Play logo are trademarks of Google&nbsp;LLC.</p>
+<p class="legal">Earth imagery: NASA Earth Observatory and NASA Goddard Space Flight Center. Kubelo is not endorsed by NASA.</p>
 </div>
 </footer>
 </main>
 <div class="track" aria-hidden="true"></div>
 </div>
 <script>
-/* The scan photo: Tore's photo of the cube (site/scan-photo-*.webp, no metadata). cx, cy and w say where the cube stands in the photo (its centre and its width, as fractions of the photo),
-   so the cube in the photo lands on the 3D cube. ONE line switches it off again: var SCAN_PHOTO = null; then the scan still from the app (the reserve) shows instead.
-   Off 01.11, on again 02.11: at full size the reserve looked artificial, so the photo stays until the scan step is animated in the big round. */
-var SCAN_PHOTO = { src: 'site/scan-photo-800.webp', srcset: 'site/scan-photo-800.webp 800w, site/scan-photo-1600.webp 1600w', sizes: '(min-aspect-ratio: 9/10) 62vw, 125vw', cx: 0.543, cy: 0.515, w: 0.499 };
 /* The page: the scroll drives one evening. No third parties, no cookies, nothing stored.
-   kubeloPage(root, { search, scan, reduced, cubeSrc, hook }) runs the same in the page and on the design canvas. */
+   kubeloPage(root, { search, reduced, cubeSrc, hook }) runs the same in the page and on the design canvas. */
 function kubeloPage(root, opts) {
   'use strict';
   if (!root) return null; opts = opts || {};
   var q = function (s, el) { return (el || root).querySelector(s); }, qa = function (s, el) { return Array.prototype.slice.call((el || root).querySelectorAll(s)); };
   var clamp01 = function (x) { return x < 0 ? 0 : x > 1 ? 1 : x; }, span = function (t, a, b) { return clamp01((t - a) / (b - a)); };
-  var ease = function (t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }, easeOut = function (t) { return 1 - Math.pow(1 - t, 3); };
+  var ease = function (t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
   var lerp = function (a, b, t) { return a + (b - a) * t; };
 
   // ---------- the timeline: p is the scroll position in screen heights ----------
+  // Six beats: your cube (twist it), Scan (the camera, the lock, the lift, the solve), Play (the sizes and the clock), Records (You and World as the app shows them), the Earth (the view), and the end (the cube at rest in the morning).
   var TL = {
-    total: 14,
-    beats: [['hero', 0, 1.4], ['scan', 1.4, 4.2], ['sizes', 4.2, 5.8], ['records', 5.8, 7.3], ['board', 7.3, 8.6], ['duel', 8.6, 9.6], ['views', 9.6, 11.8], ['free', 11.8, 12.8], ['end', 12.8, 99]],
-    rest: { hero: 0, scan: 2.75, sizes: 5.4, records: 6.9, board: 8.2, duel: 9.15, views: 11.0, free: 12.3, end: 13 },
-    scan: { photo: 1.5, lock: 2.3, help: [2.95, 3.95] },
-    sizes: { sweep: [4.4, 5.0], back: 5.12 },
-    views: { sea: 9.6, clouds: [10.0, 10.4], earth: [10.6, 11.0], rise: [11.2, 11.6] }
+    total: 12,
+    beats: [['hero', 0, 1.2], ['scan', 1.2, 4.7], ['play', 4.7, 6.5], ['records', 6.5, 7.9], ['earth', 7.9, 10.3], ['end', 10.3, 99]],
+    rest: { hero: 0, scan: 3.3, play: 6.0, records: 6.9, earth: 9.5, end: 11 },
+    records: { world: 7.25 },
+    scan: { cam: [1.2, 1.5], frame: 1.6, lock: 2.05, lift: [2.3, 2.75], help: [2.95, 4.25] },
+    play: { sweep: [4.9, 5.5], back: 5.62 },
+    earth: { sea: 7.9, clouds: [8.2, 8.6], earth: [8.8, 9.2], rise: [9.5, 9.9] },
+    night: [5.2, 5.9], morning: [10.35, 10.85], vignette: [10.25, 10.65]
   };
   var ORDER = TL.beats.map(function (b) { return b[0]; });
   function beatAt(p) { for (var i = 0; i < TL.beats.length; i++) if (p < TL.beats[i][2]) return TL.beats[i][0]; return 'end'; }
@@ -411,41 +497,34 @@ function kubeloPage(root, opts) {
   var mq = window.matchMedia ? matchMedia('(prefers-reduced-motion: reduce)') : null;
   var S = {
     reduced: (mq && mq.matches) || params.has('reduced') || !!opts.reduced, forceFlow: params.has('flow'),
-    mode: 'flow', p: 0, beat: 'hero', story: null, R: null, live: false, last: 0, drawn: 0, lay: null, dprCap: 2, dead: false
+    mode: 'flow', p: 0, beat: 'hero', story: null, R: null, live: false, last: 0, drawn: null, lay: null, dprCap: 2, dead: false
   };
-  // The scan still: the app's own scan (the reserve) until the photo exists. The photo is switched on by SCAN_PHOTO at the top of the script.
-  var photoCfg = opts.scanPhoto !== undefined ? opts.scanPhoto : SCAN_PHOTO;
-  var usePhoto = !!(photoCfg && photoCfg.src) && params.get('scan') !== 'reserve' && opts.scan !== 'reserve';
-  root.dataset.scan = usePhoto ? 'photo' : 'reserve';
   var E = {
-    stage: q('.stage'), cube: q('.cube'), frame: q('.frame'), camera: q('.camera'), vignette: q('.vignette'), dim: q('.dim'), track: q('.track'), top: q('.top'),
-    poster: q('.poster'), help: q('.help'), cells: qa('.help .cell'), clock: q('.clock'), sizes: qa('.sizes span'), places: qa('.lead .pl'), placeLine: q('.b-views .lead'), scenes: {}, beats: {}, slots: {}
+    stage: q('.stage'), cube: q('.cube'), frame: q('.frame'), camera: q('.camera'), vignette: q('.vignette'), ground: q('.ground'), track: q('.track'), top: q('.top'),
+    poster: q('.poster'), grab: q('.grab'), rec: q('.rec'), tourBtn: q('.tour-cta'), pauseBtn: q('.tour-pause'), help: q('.help'), cells: qa('.help .cell'), clock: q('.clock'), sizes: qa('.sizes span'), places: qa('.lead .pl'), placeLine: q('.b-earth .lead'), scenes: {}, beats: {}, slots: {}
   };
   qa('[data-scene]').forEach(function (el) { E.scenes[el.dataset.scene] = el; });
-  if (usePhoto) {
-    S.photo = photoCfg; E.photo = document.createElement('img'); E.photo.className = 'shot photo'; E.photo.alt = ''; E.photo.decoding = 'async'; E.photo.dataset.src = photoCfg.src; if (photoCfg.srcset) { E.photo.dataset.srcset = photoCfg.srcset; E.photo.dataset.sizes = photoCfg.sizes || '100vw'; } E.camera.appendChild(E.photo);
-  }
-  qa('[data-beat]').forEach(function (el) { E.beats[el.dataset.beat] = el; E.slots[el.dataset.beat] = q('.slot', el); el._links = qa('a', el); });
+  drawChart(q('.rc-svg'));
+  qa('[data-beat]').forEach(function (el) { E.beats[el.dataset.beat] = el; E.slots[el.dataset.beat] = q('.slot', el); el._links = qa('a, [tabindex="0"]', el); });
 
   // ---------- the sky over one evening: which still, how much, how high ----------
   // Weights per still and the cube's light mood for a scroll position (stage mode), or for a beat (flow mode).
   function skyAt(p) {
-    var w = { blue: 0, dusk: 0, night: 0, clouds: 0, earth: 0, rise: 0, morning: 0 }, y = { blue: 0, dusk: 0, night: 0, clouds: 0, earth: 0, rise: 0, morning: 0 }, V = TL.views;
-    var n = span(p, 5.35, 6.05), first = p < 1.75 ? 'blue' : 'dusk';
-    // The moon sets while the camera looks at your cube (the photo covers the sky then).
+    var w = { blue: 0, dusk: 0, night: 0, clouds: 0, earth: 0, rise: 0, morning: 0 }, y = { blue: 0, dusk: 0, night: 0, clouds: 0, earth: 0, rise: 0, morning: 0 }, V = TL.earth;
+    // The evening moves on while the camera looks at your cube (the viewfinder covers the sky then), and night falls in Play.
+    var n = span(p, TL.night[0], TL.night[1]), first = p < TL.scan.lock ? 'blue' : 'dusk';
     if (p < V.clouds[0]) { w[first] = 1 - n; w.night = n; }
     else if (p < V.earth[0]) { var a = ease(span(p, V.clouds[0], V.clouds[1])); w.night = 1 - a; w.clouds = a; y.night = 9 * a; y.clouds = -7 * (1 - a); }
     else if (p < V.rise[0]) { var b = ease(span(p, V.earth[0], V.earth[1])); w.clouds = 1 - b; w.earth = b; y.clouds = 9 * b; y.earth = -7 * (1 - b); }
-    else if (p < 11.85) { var c = ease(span(p, V.rise[0], V.rise[1])); w.earth = 1 - c; w.rise = c; y.earth = 4 * c; y.rise = -4 * (1 - c); }
-    else { var d = ease(span(p, 11.85, 12.35)); w.rise = 1 - d; w.morning = d; }
+    else if (p < TL.morning[0]) { var c = ease(span(p, V.rise[0], V.rise[1])); w.earth = 1 - c; w.rise = c; y.earth = 4 * c; y.rise = -4 * (1 - c); }
+    else { var d = ease(span(p, TL.morning[0], TL.morning[1])); w.rise = 1 - d; w.morning = d; }
     // The camera keeps rising slowly through the views.
-    var drift = span(p, V.sea, 11.8) * 3;
-    if (p >= V.sea && p < 11.85) { y.night += drift; y.clouds += drift * 0.6; y.earth += drift * 0.3; }
-    var dim = span(p, 5.9, 6.3) * (1 - span(p, 8.45, 8.75)) * 0.38;
+    var drift = span(p, V.sea, TL.beats[4][2]) * 3;
+    if (p >= V.sea && p < TL.morning[0]) { y.night += drift; y.clouds += drift * 0.6; y.earth += drift * 0.3; }
     var mood = { blue: w.blue + w.dusk, night: w.night + w.clouds + w.earth, rise: w.rise, day: w.morning };
-    return { w: w, y: y, mood: mood, vignette: span(p, 12.75, 13.15), dim: dim };
+    return { w: w, y: y, mood: mood, vignette: span(p, TL.vignette[0], TL.vignette[1]) };
   }
-  var BEAT_SKY = { hero: 'blue', scan: 'dusk', sizes: 'dusk', records: 'night', board: 'night', duel: 'night', views: 'earth', free: 'morning', end: 'morning' };
+  var BEAT_SKY = { hero: 'blue', scan: 'dusk', play: 'night', records: 'night', earth: 'earth', end: 'morning' };
   var BEAT_MOOD = { blue: { blue: 1 }, dusk: { blue: 1 }, night: { night: 1 }, earth: { night: 1 }, rise: { rise: 1 }, morning: { day: 1 }, clouds: { night: 1 } };
   function setSky(sk) {
     Object.keys(E.scenes).forEach(function (k) {
@@ -454,7 +533,12 @@ function kubeloPage(root, opts) {
       if (el._t !== t) { el._t = t; el.style.transform = t; }
     });
     var v = sk.vignette.toFixed(3); if (E.vignette._o !== v) { E.vignette._o = v; E.vignette.style.opacity = v; }
-    var d = (sk.dim || 0).toFixed(3); if (E.dim._o !== d) { E.dim._o = d; E.dim.style.opacity = d; }
+  }
+  // Scan: the viewfinder fades in over the sky, then dissolves (and grows a little, as if you lean back) while the cube lifts.
+  function setCamera(alpha, lift) {
+    var o = alpha.toFixed(3), t = 'scale(' + (1 + 0.08 * lift).toFixed(3) + ')';
+    if (E.camera._o !== o) { E.camera._o = o; E.camera.style.opacity = o; }
+    if (E.camera._t !== t) { E.camera._t = t; E.camera.style.transform = t; }
   }
 
   // ---------- layout: where each beat's cube stands (the slot) ----------
@@ -463,7 +547,7 @@ function kubeloPage(root, opts) {
     var kz = window.kubeloZoom || 1, st = E.stage.getBoundingClientRect(), L = { W: st.width / kz, H: st.height / kz, slots: {} };
     ORDER.forEach(function (id) {
       var r = E.slots[id].getBoundingClientRect(), s = Math.min(r.width, r.height) / kz;
-      L.slots[id] = { cx: (r.left + r.width / 2 - st.left) / kz, cy: (r.top + r.height / 2 - st.top) / kz, S: s * (id === 'records' || id === 'board' ? 1.05 : 1.0), top: r.top / kz };
+      L.slots[id] = { cx: (r.left + r.width / 2 - st.left) / kz, cy: (r.top + r.height / 2 - st.top) / kz, S: s, top: r.top / kz };
     });
     return L;
   }
@@ -486,7 +570,10 @@ function kubeloPage(root, opts) {
   // ---------- stage or flow ----------
   function setMode(mode) {
     S.mode = mode; root.classList.toggle('is-stage', mode === 'stage'); root.classList.toggle('is-flow', mode === 'flow');
+    if (mode !== 'stage') tourStop('mode');
     if (mode === 'stage') { E.track.style.height = 'calc(var(--stage-h) * ' + TL.total + ')'; }
+    // A label that says what the mode shows: the scan animation in stage mode, the still in flow mode.
+    qa('[data-label-flow]').forEach(function (el) { el.setAttribute('aria-label', mode === 'stage' ? el.dataset.labelStage : el.dataset.labelFlow); });
     var cur = S.beat || 'hero';
     ORDER.forEach(function (id) { var el = E.beats[id], on = mode === 'flow' || id === cur; el.style.transition = 'none'; el.style.opacity = mode === 'stage' ? (on ? '1' : '0') : ''; el._on = mode === 'stage' ? on : undefined; el.classList.toggle('on', on); setLinks(el, on); });
     S.lay = null;
@@ -507,7 +594,7 @@ function kubeloPage(root, opts) {
     else if (S.mode !== 'flow') setMode('flow');
     S.lay = null; tickSoon();
   }
-  function setLinks(el, on) { (el._links || []).forEach(function (a) { if (on) a.removeAttribute('tabindex'); else if (S.mode === 'stage') a.setAttribute('tabindex', '-1'); }); }
+  function setLinks(el, on) { (el._links || []).forEach(function (a) { if (on) { if (a.classList.contains('grab')) a.setAttribute('tabindex', '0'); else a.removeAttribute('tabindex'); } else if (S.mode === 'stage') a.setAttribute('tabindex', '-1'); }); }
 
   // ---------- the scroll ----------
   function maxScroll() { return Math.max(1, document.documentElement.scrollHeight - window.innerHeight); }
@@ -526,9 +613,10 @@ function kubeloPage(root, opts) {
     el.style.opacity = on ? '1' : '0'; el.classList.toggle('on', on); setLinks(el, on);
   }
   function setBeat(id) {
-    if (S.beat === id) return; S.beat = id;
+    if (S.beat === id) return; S.beat = id; root.dataset.beat = id;
     if (S.mode === 'stage') ORDER.forEach(function (k) { show(E.beats[k], k === id); });
     root.classList.toggle('show-badge', id !== 'hero' && id !== 'end');
+    if (id !== 'hero') endTwist(null);
   }
   function flowBeat() {
     // The section nearest the middle of the screen is the one you are reading.
@@ -547,11 +635,135 @@ function kubeloPage(root, opts) {
     try {
       var K = window.KubeloCube;
       S.R = new K.Renderer(E.cube, {}); if (S.R.software) S.dprCap = 1;
-      S.story = new K.Story({ timeline: TL, reduced: S.reduced, variant: root.dataset.scan });
-      S.flowStory = new K.Story({ timeline: TL, reduced: true, variant: root.dataset.scan });
+      S.story = new K.Story({ timeline: TL, reduced: S.reduced });
     } catch (e) { S.R = null; return; }
     tickSoon();
   }
+
+  // ---------- the twist: a finger (or the mouse) on the cube in the first beat turns the layer it holds ----------
+  // The slot has touch-action: pan-y, so the browser keeps up-and-down drags for scrolling and hands us the sideways ones; the first 8 px decide (4 for a mouse), as in the app.
+  var tw = null;
+  // The point in the stage's own pixels (the stage's width over the width measured for the cube is the zoom from the pc-modus bit, 1 without it).
+  function pointAt(e) { var r = E.stage.getBoundingClientRect(), k = S.drawn && S.drawn.lay.W ? r.width / S.drawn.lay.W : 1; return { x: (e.clientX - r.left) / k, y: (e.clientY - r.top) / k }; }
+  function onDown(e) {
+    if (tw || e.button || !S.story || !S.drawn || S.beat !== 'hero') return;
+    var pt = pointAt(e), mouse = e.pointerType === 'mouse';
+    if (!S.story.twistBegin(S.drawn.scene, S.drawn.lay, pt.x, pt.y, mouse ? 4 : 14)) return;
+    tw = { id: e.pointerId, mouse: mouse, x0: pt.x, y0: pt.y, on: false };
+    try { E.grab.setPointerCapture(e.pointerId); } catch (err) { /* older browsers */ }
+    E.grab.classList.add('held'); tickSoon();
+  }
+  function onMove(e) {
+    if (!tw || e.pointerId !== tw.id) return;
+    var pt = pointAt(e);
+    if (!tw.on) {
+      var dx = pt.x - tw.x0, dy = pt.y - tw.y0;
+      if (Math.hypot(dx, dy) < (tw.mouse ? 4 : 8)) return;
+      // Up and down on a phone is the page's: the finger scrolls, and the cube is left alone.
+      if (!tw.mouse && Math.abs(dy) > Math.abs(dx)) { endTwist(null); return; }
+      tw.on = true; S.story.twistStart(pt.x, pt.y);
+    } else S.story.twistMove(pt.x, pt.y, e.timeStamp || performance.now());
+    if (e.cancelable) e.preventDefault();
+    tickSoon();
+  }
+  function onUp(e) { if (!tw || e.pointerId !== tw.id) return; endTwist(e); }
+  function endTwist(e) {
+    if (!tw) return;
+    if (e && e.type === 'pointerup' && tw.on) S.story.twistEnd(e.timeStamp || performance.now()); else S.story.twistCancel();
+    try { E.grab.releasePointerCapture(tw.id); } catch (err) { /* already released */ }
+    tw = null; E.grab.classList.remove('held'); tickSoon();
+  }
+  var KEYS = { ArrowLeft: ['U', false], ArrowRight: ['U', true], ArrowUp: ['R', false], ArrowDown: ['R', true] };
+  function onKey(e) {
+    var k = KEYS[e.key]; if (!k || !S.story || S.beat !== 'hero') return;
+    if (S.story.turnKey(k[0], k[1])) { e.preventDefault(); tickSoon(); }
+  }
+  // A mouse drag on the poster would start the browser's own image drag and cancel the pointer; the poster takes no pointer events, and this is the belt to those braces.
+  E.grab.addEventListener('dragstart', function (e) { e.preventDefault(); });
+  E.grab.addEventListener('pointerdown', onDown);
+  E.grab.addEventListener('pointermove', onMove);
+  E.grab.addEventListener('pointerup', onUp);
+  E.grab.addEventListener('pointercancel', function (e) { if (tw && e.pointerId === tw.id) endTwist(null); });
+  E.grab.addEventListener('lostpointercapture', function (e) { if (tw && e.pointerId === tw.id) endTwist(null); });
+  E.grab.addEventListener('keydown', onKey);
+
+  // ---------- the graph in Records 3 (src/ui/records/you/Chart.tsx): the last 30 solves as dots with the trend through them, seconds on the lines, the latest ringed ----------
+  function drawChart(svg) {
+    if (!svg) return;
+    var W = 312, H = 150, L = 44, Y = function (t) { return 14 + (t - 17) * (120 / 30); }, seed = 23, rnd = function () { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+    var n = 30, pts = [], i;
+    // From about 45 s on 3 Jun to about 19 s today (27 s faster than when you started), with the days' scatter.
+    for (i = 0; i < n; i++) { var u = i / (n - 1), t = 45.3 - 26.5 * (1 - Math.pow(1 - u, 1.7)) + (rnd() - 0.5) * 5; if (i === 0) t = 45.3; if (i === n - 2) t = 19.1; if (i === n - 1) t = 19.9; pts.push({ x: L + u * (W - L - 6), t: Math.max(18.3, t) }); }
+    var out = [], tr = [];
+    [20, 30].forEach(function (g) { out.push('<line class="grid" x1="' + L + '" y1="' + Y(g).toFixed(1) + '" x2="' + W + '" y2="' + Y(g).toFixed(1) + '"></line><text x="0" y="' + (Y(g) + 4).toFixed(1) + '">' + g + ' s</text>'); });
+    for (i = 0; i < n; i++) { var a = 0, k = 0, j; for (j = Math.max(0, i - 2); j <= Math.min(n - 1, i + 2); j++) { a += pts[j].t; k++; } tr.push(pts[i].x.toFixed(1) + ',' + Y(a / k).toFixed(1)); }
+    for (i = 0; i < n; i++) out.push('<circle class="dot" cx="' + pts[i].x.toFixed(1) + '" cy="' + Y(pts[i].t).toFixed(1) + '" r="2.6"></circle>');
+    out.push('<polyline class="line" points="' + tr.join(' ') + '"></polyline>');
+    out.push('<circle class="ring" cx="' + pts[n - 2].x.toFixed(1) + '" cy="' + Y(pts[n - 2].t).toFixed(1) + '" r="7"></circle>');
+    svg.innerHTML = out.join('');
+  }
+
+  // ---------- the tour: the page scrolls through the beats on its own, started by the visitor, stopped by any input ----------
+  // Steps: glide to p over secs (eased), or hold at p for secs. Holds at a beat's rest last long enough to read its words (0.3 s per word, at least 2.5 s).
+  // The scan beat glides slowly so the camera, the lock, the lift and every move of Help get their time; the celebration gets its 3.5 s.
+  var tour = { on: false, speed: 1, steps: [], i: 0, t0: 0, from: 0, expectY: null, recent: [], startedAt: 0 };
+  function wordsIn(id) { var c = E.beats[id].querySelector('.copy'); return c ? (c.textContent || '').trim().split(/\s+/).length : 0; }
+  function holdFor(id) { return Math.max(2.5, wordsIn(id) * 0.3); }
+  function tourPlan() {
+    var R = TL.rest, Sc = TL.scan, W = TL.records.world;
+    return [
+      { p: Sc.cam[1], secs: 2.2 }, { p: Sc.cam[1], hold: 1.0 },
+      { p: Sc.lock, secs: 2.0 }, { p: Sc.lock, hold: 0.8 },
+      { p: Sc.lift[1], secs: 2.2 }, { p: Sc.help[1] + 0.08, secs: 9.0 }, { p: Sc.help[1] + 0.08, hold: Math.max(3.5, holdFor('scan')) },
+      { p: R.play, secs: 2.6 }, { p: R.play, hold: holdFor('play') },
+      { p: R.records, secs: 2.4 }, { p: R.records, hold: holdFor('records') },
+      { p: W + 0.35, secs: 1.6 }, { p: W + 0.35, hold: holdFor('records') },
+      { p: R.earth, secs: 4.5 }, { p: R.earth, hold: holdFor('earth') },
+      { p: R.end, secs: 3.2 }
+    ];
+  }
+  function pOf(y) { return (y / maxScroll()) * (TL.total - 1); }
+  function yOf(p) { return (p / (TL.total - 1)) * maxScroll(); }
+  function tourStart() {
+    if (tour.on || S.mode !== 'stage') return false;
+    tour.on = true; tour.steps = tourPlan(); tour.i = 0; tour.t0 = performance.now(); tour.from = window.scrollY; tour.startedAt = tour.t0; tour.expectY = window.scrollY; tour.recent = [window.scrollY]; tour.stopInfo = null;
+    root.classList.add('touring'); E.pauseBtn.hidden = false; E.tourBtn.setAttribute('aria-pressed', 'true');
+    tickSoon(); return true;
+  }
+  function tourStop(why) {
+    if (!tour.on) return;
+    tour.on = false; tour.expectY = null; tour.why = why || 'stopped';
+    root.classList.remove('touring'); E.pauseBtn.hidden = true; E.tourBtn.setAttribute('aria-pressed', 'false');
+  }
+  function tourFrame(now) {
+    if (!tour.on) return;
+    var st = tour.steps[tour.i]; if (!st) { tourStop('end'); return; }
+    var el = (now - tour.t0) / 1000 * tour.speed, y;
+    if (st.hold !== undefined) { y = yOf(st.p); if (el >= st.hold) { tour.i++; tour.t0 = now; tour.from = y; } }
+    else { var k = Math.min(1, el / st.secs), e = ease(k); y = tour.from + (yOf(st.p) - tour.from) * e; if (k >= 1) { tour.i++; tour.t0 = now; tour.from = yOf(st.p); } }
+    tour.expectY = Math.round(y); tour.recent.push(tour.expectY); if (tour.recent.length > 6) tour.recent.shift(); window.scrollTo(0, tour.expectY);
+  }
+  // The visitor always wins: the first touch, wheel, key or scroll of their own stops the tour. The control's own click and the key that pressed it do not.
+  function tourInput(e) {
+    if (!tour.on) return;
+    var onControl = !!(e.target && e.target.closest && e.target.closest('.tour-cta, .tour-pause'));
+    // A press on the controls is theirs. The key that pressed the button (Enter or Space, focus stays on it) is theirs too; any other key is the visitor's.
+    if (onControl && (e.type !== 'keydown' || e.key === 'Enter' || e.key === ' ')) return;
+    if (e.type === 'keydown' && performance.now() - tour.startedAt < 400) return;
+    tourStop(e.type);
+  }
+  // A scroll of the visitor's own stops the tour. In the first 250 ms a scroll can be the browser's (it brings the pressed button into view), so it only moves the starting point.
+  // Scroll events come late (a frame or a few on a slow phone), so any position among the last six the tour set is the tour's own; anything else is the visitor's.
+  function tourScroll() {
+    if (!tour.on || tour.expectY === null) return;
+    var y = window.scrollY, lo = Math.min.apply(null, tour.recent) - 2, hi = Math.max.apply(null, tour.recent) + 2;
+    if (y >= lo && y <= hi) return;
+    if (performance.now() - tour.startedAt < 250) { tour.expectY = y; tour.recent = [y]; tour.from = y; return; }
+    tour.stopInfo = { y: y, lo: lo, hi: hi, at: Math.round(performance.now() - tour.startedAt) }; tourStop('scroll');
+  }
+  ['pointerdown', 'wheel', 'keydown', 'touchstart'].forEach(function (t) { window.addEventListener(t, tourInput, { capture: true, passive: true }); });
+  E.tourBtn.addEventListener('click', function () { if (!tour.on) tourStart(); });
+  E.pauseBtn.addEventListener('click', function () { tourStop('pause'); });
 
   // ---------- the frame ----------
   function setFrame(o, lock, alpha) {
@@ -566,23 +778,20 @@ function kubeloPage(root, opts) {
     E.frame.style.opacity = alpha.toFixed(3);
   }
 
-  // ---------- the next move (the app's Help) ----------
+  // ---------- the next move (the app's Help): the arrow as it looks from here, and the colour of the face that turns ----------
   var ROT = { up: -90, down: 90, left: 180, right: 0 };
-  var FACECOL = { R: '#B71234', L: '#FF5800', U: '#F4F3EC', D: '#FFD000', F: '#009B48', B: '#0046AD' };
-  var FACECOL_Y = { R: '#009B48', L: '#0046AD', U: '#FFD000', D: '#F4F3EC', F: '#B71234', B: '#FF5800' };
-  function setHelp(info) {
-    var moves = info && info.moves, k = info ? info.move : 0, key = moves ? k + '|' + moves.length + '|' + root.dataset.scan : 'none';
+  function setHelp(cells) {
+    var key = cells ? cells.map(function (c) { return c.sym + c.color; }).join('|') : 'none';
     if (E.help._k === key) return; E.help._k = key;
-    var K = window.KubeloCube, cols = root.dataset.scan === 'reserve' ? FACECOL_Y : FACECOL;
     E.cells.forEach(function (c, i) {
-      var mv = moves && moves[k + i];
-      if (!mv) { c.style.visibility = 'hidden'; return; }
+      var h = cells && cells[i];
+      if (!h) { c.style.visibility = 'hidden'; return; }
       c.style.visibility = 'visible';
-      var nm = mv.face + (mv.prime ? "'" : ''), sym = K.SYMBOL[nm] || 'up', use = c.querySelector('use'), svg = c.querySelector('svg');
-      use.setAttribute('href', sym === 'cw' ? '#i-cw' : sym === 'ccw' ? '#i-ccw' : '#i-arrow');
-      svg.setAttribute('viewBox', sym === 'cw' || sym === 'ccw' ? '-2 -2 28 28' : '0 0 24 24');
-      svg.style.transform = ROT[sym] !== undefined ? 'rotate(' + ROT[sym] + 'deg)' : '';
-      c.querySelector('i').style.background = cols[mv.face];
+      var use = c.querySelector('use'), svg = c.querySelector('svg'), round = h.sym === 'cw' || h.sym === 'ccw';
+      use.setAttribute('href', round ? '#i-' + h.sym : '#i-arrow');
+      svg.setAttribute('viewBox', round ? '-2 -2 28 28' : '0 0 24 24');
+      svg.style.transform = ROT[h.sym] !== undefined ? 'rotate(' + ROT[h.sym] + 'deg)' : '';
+      c.querySelector('i').style.background = h.color;
       c.className = 'cell ' + (i === 0 ? 'now' : i === 1 ? 'next' : 'later');
     });
   }
@@ -592,10 +801,15 @@ function kubeloPage(root, opts) {
     if (E.clock._on !== on) { E.clock._on = on; E.clock.classList.toggle('on', on); }
   }
   function setSize(N) { if (E._size === N) return; E._size = N; E.sizes.forEach(function (s, i) { s.classList.toggle('on', i + 2 === N); }); }
+  function setSide(side) { if (E._side === side) return; E._side = side; E.rec.dataset.side = side; }
   function setPlace(id) {
     if (E._place === id) return; E._place = id;
     E.placeLine.classList.toggle('places', !!id);
     E.places.forEach(function (s) { s.classList.toggle('on', s.dataset.place === id); });
+  }
+  function setLive(info) {
+    if (!S.live) { S.live = true; E.cube.style.opacity = '1'; root.classList.add('live'); setTimeout(function () { E.poster.style.opacity = '0'; }, 60); }
+    if (info && info.twists && !root.classList.contains('twisted')) root.classList.add('twisted');
   }
 
   // ---------- one frame ----------
@@ -606,79 +820,70 @@ function kubeloPage(root, opts) {
     try { (S.mode === 'stage' ? stageFrame : flowFrame)(now); } catch (e) { if (window.console) console.error('[kubelo]', e); }
   }
   function dprFor(L) { return Math.min(window.devicePixelRatio || 1, S.dprCap, L.W > 1000 ? 1.5 : 2); }
+  function frameDt(now) { var dt = S.paused ? 0 : Math.min(0.05, Math.max(0, (now - (S.last || now)) / 1000)); S.last = now; return dt; }
   function stageFrame(now) {
-    var dt = S.paused ? 0 : Math.min(0.05, Math.max(0, (now - (S.last || now)) / 1000)); S.last = now;
-    var p = S.frozen !== undefined ? S.frozen : readP(), L = S.lay || (S.lay = measure()), beat = beatAt(p), T = TL;
+    var dt = frameDt(now);
+    tourFrame(now);
+    var p = S.frozen !== undefined ? S.frozen : readP(), L = S.lay || (S.lay = measure()), beat = beatAt(p), T = TL, Sc = T.scan;
     setBeat(beat);
     var sk = skyAt(p); setSky(sk);
-    // Scan: the camera's photo, the frame that locks, then your cube.
-    var camA = beat === 'scan' ? 1 - span(p, T.scan.lock, T.scan.lock + 0.22) : 0;
-    camA *= beat === 'scan' ? span(p, 1.4, T.scan.photo) : 1;
-    if (E.camera._o !== camA.toFixed(3)) { E.camera._o = camA.toFixed(3); E.camera.style.opacity = E.camera._o; }
+    // Scan: the camera looks at your cube, the frame locks on, and the cube lifts out of the viewfinder into the evening.
+    var camIn = beat === 'scan' ? span(p, Sc.cam[0], Sc.cam[1]) : 0, lift = ease(span(p, Sc.lift[0], Sc.lift[1])), held = camIn * (1 - lift);
+    setCamera(held, lift);
     var an = anchorAt(p, L), info = null, busy = false;
-    if (camA > 0.001) placeCamera(an);
+    if (held > 0) an = { cx: an.cx, cy: an.cy + 0.06 * an.S * held, S: an.S * (1 - 0.1 * held) };
     var dpr = dprFor(L);
     if (S.R && S.story) {
       var r = S.story.update(p, S.frozen !== undefined ? 0 : dt, beat, sk.mood); info = r.info; busy = info.busy;
-      var cubeA = beat === 'scan' ? span(p, T.scan.lock + 0.04, T.scan.lock + 0.24) : beat === 'records' || beat === 'board' ? 0 : 1;
-      S.R.draw({ W: L.W, H: L.H, dpr: dpr, cubes: [{ scene: r.scene, cx: an.cx, cy: an.cy, S: an.S }] }); S.drawn = now;
-      if (!S.live) { S.live = true; E.cube.style.opacity = '1'; setTimeout(function () { E.poster.style.opacity = '0'; }, 60); }
-      var ca = (cubeA).toFixed(3); if (E.cube._a !== ca) { E.cube._a = ca; E.cube.style.opacity = S.live ? ca : '0'; }
-      // The frame: dim and turned while the camera looks, then it locks to the cube's outline.
-      if (beat === 'scan' && p < T.scan.lock + 0.5) {
-        var lock = ease(span(p, T.scan.lock - 0.25, T.scan.lock)), fa = span(p, T.scan.photo, T.scan.photo + 0.15) * (1 - span(p, T.scan.lock + 0.25, T.scan.lock + 0.5)) * (0.55 + 0.45 * lock);
-        var sc = Object.assign({}, r.scene, { yaw: -36, bob: 0, cubeTurn: null });
-        setFrame(window.KubeloCube.outline(sc, { W: L.W, H: L.H, cx: an.cx, cy: an.cy, S: an.S }), lock, fa);
+      var lay = { W: L.W, H: L.H, cx: an.cx, cy: an.cy, S: an.S };
+      S.R.draw({ W: L.W, H: L.H, dpr: dpr, cubes: [{ scene: r.scene, cx: an.cx, cy: an.cy, S: an.S }] }); S.drawn = { scene: r.scene, lay: lay };
+      setLive(info);
+      // Beat 4 has your sky instead of the cube; the cube comes back solved over the Earth and rests in the morning light at the end.
+      var ca = (beat === 'records' ? 1 - span(p, T.beats[3][1], T.beats[3][1] + 0.3) : beat === 'earth' ? span(p, T.beats[4][1], T.beats[4][1] + 0.3) : 1).toFixed(3); if (E.cube._a !== ca) { E.cube._a = ca; E.cube.style.opacity = ca; }
+      // The frame: dim and a little turned while the camera looks, then it locks to the cube's outline, and it lets go as the cube lifts.
+      if (beat === 'scan' && p > Sc.frame - 0.05 && p < Sc.lift[1]) {
+        var lock = ease(span(p, Sc.lock - 0.3, Sc.lock)), fa = span(p, Sc.frame, Sc.frame + 0.15) * (1 - lift) * (0.55 + 0.45 * lock);
+        setFrame(window.KubeloCube.outline(Object.assign({}, r.scene, { cubeTurn: null, turn: null }), lay), lock, fa);
       } else setFrame(null);
     }
     // Help, the clock, the sizes, the places.
-    var helpOn = beat === 'scan' && p > T.scan.help[0] - 0.12 && !(info && info.solved);
+    var helpOn = beat === 'scan' && p > Sc.help[0] - 0.12 && !(info && info.solved);
     if (E.help._a !== helpOn) { E.help._a = helpOn; E.help.style.opacity = helpOn ? '1' : '0'; }
-    if (beat === 'scan' && info) setHelp(info);
-    if (beat === 'sizes') { if (info) { setSize(info.size || 3); setClock(info.clock || 0, !!info.clockRunning); } else setSize(3); }
-    var clockOff = beat !== 'sizes' || p < T.sizes.back; if (E.clock._off !== clockOff) { E.clock._off = clockOff; E.clock.classList.toggle('off', clockOff); }
-    setPlace(beat === 'views' ? (p < T.views.clouds[0] + 0.2 ? 'sea' : p < T.views.earth[0] + 0.2 ? 'clouds' : 'earth') : null);
-    if (S.R && (busy || !S.reduced || S.scrolling)) tickSoon();
-  }
-  function placeCamera(an) {
-    // The scan still sits under the cube. A cube in the still lands on the 3D cube: 0.839 of S wide, centred at (0.487, 0.55) of S.
-    var shot = q('.shot.reserve', E.camera), s = an.S, w, h, fx, fy;
-    if (S.photo) {
-      var ph = E.photo, asp = ph.naturalWidth ? ph.naturalHeight / ph.naturalWidth : 1;
-      w = s * 0.839 / S.photo.w; h = w * asp; fx = S.photo.cx; fy = S.photo.cy;
-      var mask = 'radial-gradient(circle at ' + (fx * 100).toFixed(1) + '% ' + (fy * 100).toFixed(1) + '%, #000 ' + (0.28 * w).toFixed(0) + 'px, rgba(0,0,0,0.45) ' + (0.34 * w).toFixed(0) + 'px, transparent ' + (0.41 * w).toFixed(0) + 'px)';
-      if (ph._mask !== mask) { ph._mask = mask; ph.style.setProperty('--mask', mask); }
-      ph.style.left = (an.cx - 0.013 * s - fx * w).toFixed(1) + 'px'; ph.style.top = (an.cy + 0.05 * s - fy * h).toFixed(1) + 'px'; ph.style.width = w.toFixed(1) + 'px'; ph.style.height = h.toFixed(1) + 'px';
-    }
-    // The app's own scan (10-scan-found): its cube spans 0.78 of the crop's width, centred a little low.
-    // Its cube is 0.785 of the crop wide, centred at (0.538, 0.482); the 3D cube is 0.839 of S wide, centred at (0.487, 0.55) of S.
-    w = s * 1.069; shot.style.left = (an.cx - 0.013 * s - 0.538 * w).toFixed(1) + 'px'; shot.style.top = (an.cy + 0.05 * s - 0.482 * w).toFixed(1) + 'px'; shot.style.width = w.toFixed(1) + 'px'; shot.style.height = w.toFixed(1) + 'px';
+    if (beat === 'scan' && info) setHelp(info.help);
+    if (beat === 'play') { if (info) { setSize(info.size || 3); setClock(info.clock || 0, !!info.clockRunning); } else setSize(3); }
+    var clockOff = beat !== 'play' || p < T.play.back; if (E.clock._off !== clockOff) { E.clock._off = clockOff; E.clock.classList.toggle('off', clockOff); }
+    setPlace(beat === 'earth' ? (p < T.earth.clouds[0] + 0.2 ? 'sea' : p < T.earth.earth[0] + 0.2 ? 'clouds' : 'earth') : null);
+    setSide(beat === 'records' && p >= T.records.world ? 'world' : 'you');
+    if (S.R && (busy || !S.reduced || S.scrolling || tw || tour.on)) tickSoon();
   }
   function flowFrame(now) {
-    var L = S.lay = measure(), beat = flowBeat(), dpr = dprFor(L);
+    if (tour.on) tourStop('flow');
+    var dt = frameDt(now), L = S.lay = measure(), beat = flowBeat(), dpr = dprFor(L);
     setBeat(beat);
     var sky = BEAT_SKY[beat], w = { blue: 0, dusk: 0, night: 0, clouds: 0, earth: 0, rise: 0, morning: 0 }; w[sky] = 1;
     Object.keys(E.scenes).forEach(function (k) { var el = E.scenes[k]; el.style.transition = 'opacity .7s ease'; el.style.transform = ''; el.style.opacity = String(w[k]); });
-    E.vignette.style.opacity = beat === 'end' ? '1' : '0'; E.camera.style.opacity = '0'; E.dim.style.opacity = beat === 'records' || beat === 'board' ? '0.38' : '0';
-    if (S.R && S.flowStory) {
-      var cubes = [];
+    E.vignette.style.opacity = beat === 'end' ? '1' : '0'; setCamera(0, 0);
+    if (S.R && S.story) {
+      var cubes = [], busy = !!S.story.twistTick(dt);
       ORDER.forEach(function (id) {
-        var sl = L.slots[id]; if (id === 'records' || id === 'board') return; if (sl.cy + sl.S / 2 < -40 || sl.cy - sl.S / 2 > L.H + 40) return;
-        var st = S.flowStory.still(id, BEAT_MOOD[BEAT_SKY[id]], id === 'scan' ? { help: 0.5 } : id === 'sizes' ? { size: 3, clock: 4.2 } : {});
+        var sl = L.slots[id]; if (id === 'records') return; if (sl.cy + sl.S / 2 < -40 || sl.cy - sl.S / 2 > L.H + 40) return;
+        var st = S.story.still(id, BEAT_MOOD[BEAT_SKY[id]], id === 'scan' ? { help: 0.5 } : id === 'play' ? { size: 3, clock: 4.2 } : {});
         cubes.push({ scene: st.scene, cx: sl.cx, cy: sl.cy, S: sl.S });
-        if (id === 'scan') setHelp(st.info);
-        if (id === 'sizes') { setSize(3); setClock(st.info.clock || 0, !!st.info.clockRunning); }
+        if (id === 'hero') { S.drawn = { scene: st.scene, lay: { W: L.W, H: L.H, cx: sl.cx, cy: sl.cy, S: sl.S } }; busy = busy || !!st.info.busy; }
+        if (id === 'scan') setHelp(st.info.help);
+        if (id === 'play') { setSize(3); setClock(st.info.clock || 0, !!st.info.clockRunning); }
       });
       S.R.draw({ W: L.W, H: L.H, dpr: dpr, cubes: cubes });
-      if (!S.live) { S.live = true; E.cube.style.opacity = '1'; setTimeout(function () { E.poster.style.opacity = '0'; }, 60); }
+      setLive(S.story);
+      if (busy || tw) tickSoon();
     }
     E.help.style.opacity = '1';
     setPlace(null);
   }
 
   // ---------- events ----------
-  var scrollT = 0, rs = 0, raf2 = 0;
-  function onScroll() { S.scrolling = true; clearTimeout(scrollT); scrollT = setTimeout(function () { S.scrolling = false; }, 160); loadSkies(); tickSoon(); }
+  var scrollT = 0, rs = 0;
+  function onScroll() { S.scrolling = true; clearTimeout(scrollT); scrollT = setTimeout(function () { S.scrolling = false; }, 160); loadSkies(); tourScroll(); tickSoon(); }
   function onResize() { clearTimeout(rs); rs = setTimeout(function () { S.lay = null; decide(); }, 120); S.lay = null; tickSoon(); }
   function onMotion(e) { S.reduced = e.matches || !!opts.reduced; if (S.story) S.story.reduced = S.reduced; decide(); }
   window.addEventListener('scroll', onScroll, { passive: true });
@@ -690,14 +895,13 @@ function kubeloPage(root, opts) {
     if (S.skies) return; S.skies = true;
     var land = window.innerWidth / Math.max(1, window.innerHeight) >= 0.9;
     qa('img[data-p]').forEach(function (im) { var src = land ? im.dataset.l : im.dataset.p; if (src && im.getAttribute('src') !== src) im.src = src; });
-    qa('img[data-src]').forEach(function (im) { if (im.getAttribute('src')) return; if (im.dataset.srcset) { im.sizes = im.dataset.sizes; im.srcset = im.dataset.srcset; } im.src = im.dataset.src; });
   }
   decide();
   setBeat('hero');
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (!S.dead) { S.lay = null; decide(); } });
   if (opts.hook) {
     // A hook for the storyboard and its captures: holds the story at one scroll position.
-    window.__kubelo = { TL: TL, setP: function (p) { loadSkies(); window.scrollTo(0, (p / (TL.total - 1)) * maxScroll()); }, pause: function (on) { S.paused = on; tickSoon(); }, state: S, decide: decide, beat: function (id) { loadSkies(); E.beats[id].scrollIntoView(); } };
+    window.__kubelo = { TL: TL, setP: function (p) { loadSkies(); window.scrollTo(0, (p / (TL.total - 1)) * maxScroll()); }, pause: function (on) { S.paused = on; tickSoon(); }, state: S, decide: decide, beat: function (id) { loadSkies(); E.beats[id].scrollIntoView(); }, tour: tour, tourPlan: tourPlan, pOf: pOf };
   }
   // The 3D cube loads after the first paint, when the browser is idle.
   var idle = function (cb) { return window.requestIdleCallback ? requestIdleCallback(cb, { timeout: 700 }) : setTimeout(cb, 60); };
