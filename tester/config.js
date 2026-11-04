@@ -6,6 +6,6 @@
    build/deploy-pages.sh stops a real publish while GRUPPE_URL is a placeholder, and only notes it for PLAY_TEST_URL. */
 window.KUBELO_TESTER = {
   GRUPPE_URL: 'https://groups.google.com/g/kubelo-testers',
-  PLAY_TEST_URL: 'PLAY_TEST_URL',
+  PLAY_TEST_URL: 'https://play.google.com/apps/testing/app.kubelo',
   PROMISE_APPROVED: true
 };
