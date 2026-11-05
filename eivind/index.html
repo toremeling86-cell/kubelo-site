@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+/* «Side for datamaskiner» på en berøringstelefon: Chrome ser bort fra meta viewport og legger siden ut 980 px bred, så den ser ut som på en PC, bare liten.
+   Her skaleres siden opp til skjermbredden (CSS-zoom), så telefonutgaven vises. Faktoren står i --kz og i window.kubeloZoom (1 uten skalering): vw, vh og mål fra skript må deles på den.
+   Terskelen 1,15: i PC-modus på en telefon er forholdet over 2. Under 1,15 er forskjellen så liten at skalering bare gir støy (nettbrett, smale vinduer). PC-er har fin peker og røres ikke.
+   Appen under /play/ har ikke denne biten: testerne bruker den fra Play-butikken, og der finnes ikke PC-modus. */
+(function () {
+  var d = document.documentElement, T = 1.15, k = window.kubeloZoom = 1;
+  function fit() {
+    var w = d.clientWidth, s = screen.width, n = matchMedia('(pointer: coarse)').matches && s > 0 && w > s * T ? w / s : 1;
+    if (n === k) return;
+    window.kubeloZoom = k = n;
+    if (n > 1) { d.style.zoom = n; d.style.setProperty('--kz', n); }
+    else { d.style.removeProperty('zoom'); d.style.removeProperty('--kz'); }
+  }
+  fit();
+  addEventListener('resize', fit);
+  addEventListener('orientationchange', fit);
+})();
+</script>
+<title>Spesialtest for Eivind</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b1230">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/svg+xml" href="/site/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/site/favicon-32.png">
+<link rel="preload" href="/site/fonts/schibsted-grotesk-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/site/fonts/schibsted-grotesk-500.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+/* Siden for Eivind (Tore 05.11), som har iPhone og ikke kan være med i Google-testen: den samme appen, i Safari. Stilen er den samme som på siden for testere.
+   Teksten er ordrett fra Forretning, på Tores dialekt. Siden har noindex, står ikke i sitemap.xml, og ingen andre sider lenker hit (build/eivind.test.ts).
+   Ingen manifest og ingen apple-touch-icon: legger Eivind denne siden på Hjem-skjermen i stedet for appen, skal den ikke se ut som Kubelo. */
+@font-face{font-family:'Schibsted Grotesk';font-style:normal;font-weight:500;font-display:swap;src:url(/site/fonts/schibsted-grotesk-500.woff2) format('woff2')}
+@font-face{font-family:'Schibsted Grotesk';font-style:normal;font-weight:600;font-display:swap;src:url(/site/fonts/schibsted-grotesk-600.woff2) format('woff2')}
+:root{color-scheme:dark}
+html,body{margin:0;min-height:100%;background:#0b1230;color:#f3f1ec}
+body{min-height:calc(100vh / var(--kz,1));min-height:calc(100svh / var(--kz,1));display:flex;flex-direction:column;font-family:'Schibsted Grotesk',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;position:relative;overflow-x:hidden}
+.sky{position:fixed;inset:0;z-index:0;background:#0b1230 url(/site/sky-blue-p.webp) 50% 50%/cover no-repeat}
+@media (min-aspect-ratio: 9/10){.sky{background-image:url(/site/sky-blue-l.webp);background-position:50% 22%}}
+.sky::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,9,22,.38) 0%,rgba(6,9,22,.5) 40%,rgba(6,9,22,.78) 100%)}
+.h{text-shadow:0 0 2px rgba(8,10,20,.95),0 0 4px rgba(8,10,20,.95),0 0 6px rgba(8,10,20,.9),0 0 8px rgba(8,10,20,.9),0 0 10px rgba(8,10,20,.85),0 0 14px rgba(8,10,20,.8),0 0 22px rgba(8,10,20,.55)}
+a{color:#f3f1ec;text-decoration:none}
+a:focus-visible{outline:2px solid #f3f1ec;outline-offset:4px;border-radius:6px}
+header{position:relative;z-index:1;padding:0 24px;min-height:68px;display:flex;align-items:center}
+.wordmark{display:inline-flex;align-items:center;min-height:48px;font-weight:500;font-size:16px;letter-spacing:.22em}
+main{position:relative;z-index:1;flex:1;width:100%;max-width:34rem;box-sizing:border-box;margin:0 auto;padding:12px 24px 56px;display:flex;flex-direction:column;gap:24px}
+h1{margin:0;font-weight:600;font-size:clamp(1.875rem,calc(8vw / var(--kz,1)),2.75rem);line-height:1.1;letter-spacing:-.022em;text-wrap:balance;overflow-wrap:anywhere}
+p{margin:0;font-weight:500;font-size:1.0625rem;line-height:1.5;color:#e9e7e1;text-wrap:pretty;overflow-wrap:anywhere}
+.lead{font-size:1.1875rem;color:#f3f1ec}
+.steps{display:flex;flex-direction:column;gap:10px}
+ol{margin:0;padding:0 0 0 1.75rem;display:flex;flex-direction:column;gap:10px}
+li{padding-left:.25rem;font-weight:500;font-size:1.0625rem;line-height:1.5;color:#e9e7e1;overflow-wrap:anywhere}
+li::marker{font-weight:600;color:#f3f1ec}
+.cta{align-self:flex-start;display:inline-flex;align-items:center;gap:10px;min-height:48px;margin-top:6px;padding:0 20px;border:1px solid rgba(243,241,236,.7);border-radius:999px;font-weight:600;font-size:1.0625rem;line-height:1.25}
+.cta svg{flex:none;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.cta:hover{border-color:#f3f1ec}
+.cta:focus-visible{outline-offset:3px;border-radius:999px}
+@media (prefers-reduced-motion: no-preference){.cta{transition:border-color .2s ease}}
+</style>
+</head>
+<body>
+<div class="sky" aria-hidden="true"></div>
+<header>
+<span class="wordmark h" aria-hidden="true">KUBELO</span>
+</header>
+<main>
+<h1 class="h">Spesialtest for Eivind</h1>
+<p class="lead h">Hei Eivind!<br>Google-testen er ikkje for iPhone, så du får ein test for deg sjølv. Kubelo skal virka i Safari på iPhonen, og du er den første som prøver han der.</p>
+<section class="steps" aria-labelledby="slik">
+<p class="h" id="slik">Les alt først, for denne sida er borte når Kubelo er starta. Slik får du han på Hjem-skjermen:</p>
+<ol class="h">
+<li>Trykk «Start Kubelo» under.</li>
+<li>Trykk på del-knappen, firkanten med pil opp. Ser du han ikkje, trykk på «…» først.</li>
+<li>Bla ned, trykk «Legg til på Hjem-skjerm» og så «Legg til».</li>
+<li>Trykk på hengelåsen i kontrollsenteret, så skjermen ikkje snur seg.</li>
+</ol>
+</section>
+<p class="h">Du kan prøva alt, også «Scan» og topplista.</p>
+<p class="h">Sei fra til meg hvis du finner feil eller ting som er rare. Takk for at du er med!<br>Tore</p>
+<a class="cta h" href="/play/"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg><span>Start Kubelo</span></a>
+</main>
+</body>
+</html>
