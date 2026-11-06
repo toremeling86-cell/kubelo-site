@@ -1,0 +1,12 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["5267TCX672.app.kubelo"],
+        "components": [
+          { "/": "/play/*" }
+        ]
+      }
+    ]
+  }
+}
