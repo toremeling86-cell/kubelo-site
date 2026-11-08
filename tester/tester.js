@@ -1,4 +1,4 @@
-/* kubelo.app/tester: sets the two links from config.js, picks the language, and switches it. No cookies, no storage, nothing sent anywhere.
+/* kubelo.app/tester: sets the links from config.js, picks the language, and switches it. No cookies, no storage, nothing sent anywhere.
    Norwegian shows when navigator.language is nb, nn or no (also nb-NO and so on). ?lang=nb or ?lang=en overrides it, and the link in the header switches. */
 (function () {
   var cfg = window.KUBELO_TESTER || {};
@@ -6,8 +6,8 @@
   var sw = document.getElementById('switch');
   var TITLE = { en: 'Test Kubelo before launch | Kubelo', nb: 'Test Kubelo før lanseringen | Kubelo' };
   var DESC = {
-    en: 'Help us test Kubelo, a free cube app for Android, before it launches on Google Play. Getting started takes two steps.',
-    nb: 'Hjelp oss å teste Kubelo, en gratis kubeapp for Android, før appen kommer på Google Play. Det er to korte steg.'
+    en: 'Kubelo is a free cube app for Android and iPhone. Help us test it before it launches on Google Play.',
+    nb: 'Kubelo er en gratis kubeapp for Android og iPhone. Hjelp oss å teste appen før den kommer på Google Play.'
   };
 
   // A link in config.js shows its button; while it is still a placeholder (not an https address), the button stays hidden and the line «comes here soon» stands in its place.
