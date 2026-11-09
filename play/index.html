@@ -34,20 +34,74 @@
     -->
     <style>html,body{background:#0b0b0c;height:100%;margin:0}.veil{z-index:20;pointer-events:none;background:radial-gradient(70% 60% at 50% 45%,#1d1c1a 0%,#0b0b0c 70%);transition:opacity .9s cubic-bezier(.16,1,.3,1),visibility 0s linear .9s;position:fixed;inset:0}.veil.is-gone{opacity:0;visibility:hidden;transition:opacity .75s cubic-bezier(.16,1,.3,1) .15s,visibility 0s linear .9s}.veil:before{content:"";background:radial-gradient(ellipse 120% 62% at 50% 100%, var(--veil-glow,transparent) 0%, transparent 100%), radial-gradient(ellipse 90% 45% at 50% 0%, var(--veil-top,transparent) 0%, transparent 100%);opacity:0;animation:1.4s cubic-bezier(.2,.8,.2,1) .15s forwards veil-glow;position:absolute;inset:0}@keyframes veil-glow{to{opacity:1}}.veil-mark{filter:opacity()}.veil.is-gone .veil-mark{filter:opacity(0);transition:filter .15s linear}.veil-mark{left:calc(4px + env(safe-area-inset-left,0px) + 12px);top:calc(env(safe-area-inset-top,0px) + 28px);opacity:.28;width:98.8px;height:15px;animation:2.4s cubic-bezier(.2,.8,.2,1) infinite veil-breathe;display:block;position:absolute;transform:translateY(-50%)}.veil.is-gone .veil-mark{animation-play-state:paused}@media (height<=520px) and (aspect-ratio>=1){.veil-mark{top:calc(env(safe-area-inset-top,0px) + 26px)}}@media (prefers-reduced-motion:reduce){.veil-mark{opacity:.45;animation:none}.veil:before{opacity:1;animation:none}}@keyframes veil-breathe{0%,to{opacity:.28}50%{opacity:.62}}</style>
     <noscript><style>.veil{display:none}</style></noscript>
-    <script type="module" crossorigin src="/play/assets/index-Cd7sM_Lt.js"></script>
+    <script id="startvakt">
+      // Vakt for oppstarten (teknisk helse 09.11, punkt 2). Står her, uten imports, så den virker også når hovedfila aldri kjørte: en fil som ikke lastes, en nettleser som ikke forstår koden, eller grafikk som henger.
+      // Appen har startet når sløret er løftet (`is-gone`, `liftVeil` i src/ui/lib/veil.ts; grensen rundt appen løfter det også når noe krasjer og viser sitt eget kort). Før det vises en enkel melding med «Try again»,
+      // enten etter 25 s, eller med en gang når en skriptfil ikke lastes, koden ikke kan leses eller nettleseren mangler moduler. Starter appen likevel (tregt nett), tas meldingen bort igjen. Er den startet, rydder vakten etter seg.
+      (function () {
+        var started = function () {
+          var veil = document.getElementById('veil');
+          return !!veil && / is-gone /.test(' ' + veil.className + ' ');
+        };
+        var card = null;
+        var poll = 0;
+        var done = function () {
+          clearInterval(poll);
+          window.removeEventListener('error', onError, true);
+          if (card && card.parentNode) card.parentNode.removeChild(card);
+          card = null;
+        };
+        var show = function () {
+          if (started()) return done();
+          if (card) return;
+          card = document.createElement('div');
+          card.setAttribute('role', 'alert');
+          card.style.cssText = 'position:fixed;top:0;right:0;bottom:0;left:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;color:#ECEAE4;font:16px/1.4 system-ui,sans-serif';
+          var title = document.createElement('p');
+          title.style.cssText = 'margin:0 0 12px;font-size:20px;font-weight:600';
+          title.textContent = "Kubelo couldn't start";
+          var text = document.createElement('p');
+          text.style.cssText = 'margin:0 0 24px;max-width:300px;opacity:.8';
+          text.textContent = 'Check your connection and try again. If it keeps happening, update your browser.';
+          var button = document.createElement('button');
+          button.type = 'button';
+          button.style.cssText = 'min-height:48px;padding:0 28px;border:1px solid rgba(236,234,228,.6);border-radius:24px;background:none;color:inherit;font:inherit;font-weight:600';
+          button.textContent = 'Try again';
+          button.onclick = function () {
+            location.reload();
+          };
+          card.appendChild(title);
+          card.appendChild(text);
+          card.appendChild(button);
+          document.documentElement.appendChild(card);
+          // Starter appen likevel, går meldingen bort av seg selv.
+          poll = setInterval(function () {
+            if (started()) done();
+          }, 1000);
+        };
+        var onError = function (e) {
+          var target = e.target;
+          if ((target && target.tagName === 'SCRIPT') || (e.error && e.error.name === 'SyntaxError')) show();
+        };
+        window.addEventListener('error', onError, true);
+        if (!('noModule' in document.createElement('script'))) show();
+        setTimeout(show, 25000);
+      })();
+    </script>
+    <script type="module" crossorigin src="/play/assets/index-BvTxow8s.js"></script>
     <link rel="modulepreload" crossorigin href="/play/assets/rolldown-runtime-XKyaHtl9.js">
     <link rel="modulepreload" crossorigin href="/play/assets/cube-iSAOp81T.js">
     <link rel="modulepreload" crossorigin href="/play/assets/session-Dwv5DYuJ.js">
-    <link rel="modulepreload" crossorigin href="/play/assets/keys-B0eQ3FXG.js">
+    <link rel="modulepreload" crossorigin href="/play/assets/keys-BDWdPmJm.js">
     <link rel="modulepreload" crossorigin href="/play/assets/wiping-C43ZGAKh.js">
     <link rel="modulepreload" crossorigin href="/play/assets/react-DUz72-CK.js">
     <link rel="modulepreload" crossorigin href="/play/assets/core-6Fox2abY.js">
-    <link rel="modulepreload" crossorigin href="/play/assets/prefs-my2uL3ql.js">
-    <link rel="modulepreload" crossorigin href="/play/assets/lang-FI2NrQ3w.js">
+    <link rel="modulepreload" crossorigin href="/play/assets/prefs-CtSzvr9l.js">
+    <link rel="modulepreload" crossorigin href="/play/assets/lang-e7_DpJAX.js">
     <link rel="modulepreload" crossorigin href="/play/assets/debug-e29s2OK3.js">
-    <link rel="modulepreload" crossorigin href="/play/assets/feedback-CnxHptk7.js">
+    <link rel="modulepreload" crossorigin href="/play/assets/feedback-BxpD2JrN.js">
     <link rel="modulepreload" crossorigin href="/play/assets/notation-CaTfMHiJ.js">
-    <link rel="modulepreload" crossorigin href="/play/assets/scan-BfwA33Zg.js">
+    <link rel="modulepreload" crossorigin href="/play/assets/shell-SJRxzR8t.js">
     <link rel="modulepreload" crossorigin href="/play/assets/recognize-Deq9g4ol.js">
     <link rel="modulepreload" crossorigin href="/play/assets/moveText-BJI-1Pr_.js">
     <link rel="modulepreload" crossorigin href="/play/assets/three-DTSqHtj7.js">
@@ -62,15 +116,13 @@
     <link rel="modulepreload" crossorigin href="/play/assets/slices-DZrzc4lX.js">
     <link rel="modulepreload" crossorigin href="/play/assets/terrainCache-us76TUyH.js">
     <link rel="modulepreload" crossorigin href="/play/assets/preload-helper-6DGb1DyC.js">
-    <link rel="modulepreload" crossorigin href="/play/assets/shell-CJWZtMIw.js">
-    <link rel="modulepreload" crossorigin href="/play/assets/engine-Bi56nkAB.js">
-    <link rel="modulepreload" crossorigin href="/play/assets/scrambles-BdSy6ZS2.js">
-    <link rel="modulepreload" crossorigin href="/play/assets/retiredSettings-C6RQ2_0F.js">
-    <link rel="modulepreload" crossorigin href="/play/assets/migrations-BfaikB_4.js">
-    <link rel="modulepreload" crossorigin href="/play/assets/store-C0Pt7qpz.js">
-    <link rel="modulepreload" crossorigin href="/play/assets/t-fE38eDo4.js">
-    <link rel="modulepreload" crossorigin href="/play/assets/format-BUHT223p.js">
-    <link rel="modulepreload" crossorigin href="/play/assets/cockpit-BWTEzPuX.js">
+    <link rel="modulepreload" crossorigin href="/play/assets/engine-B1AW-fLo.js">
+    <link rel="modulepreload" crossorigin href="/play/assets/scrambles-DhCmVshz.js">
+    <link rel="modulepreload" crossorigin href="/play/assets/migrations-DUthVZB2.js">
+    <link rel="modulepreload" crossorigin href="/play/assets/store-9BHBgVJl.js">
+    <link rel="modulepreload" crossorigin href="/play/assets/t-DVvSNBnF.js">
+    <link rel="modulepreload" crossorigin href="/play/assets/format-KckXtkM8.js">
+    <link rel="modulepreload" crossorigin href="/play/assets/cockpit-BCY7d2ez.js">
     <link rel="modulepreload" crossorigin href="/play/assets/features-BWnSIfqY.js">
     <link rel="stylesheet" crossorigin href="/play/assets/cockpit-hDARFUH2.css">
     <link rel="stylesheet" crossorigin href="/play/assets/index-BGk-e59C.css">

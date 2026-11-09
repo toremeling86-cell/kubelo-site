@@ -117,7 +117,7 @@ body { container-type: inline-size; container-name: pg; }
 </div>
 
 <h1>Privacy policy</h1>
-<p class="updated">Last updated: November 3, 2026</p>
+<p class="updated">Last updated: November 9, 2026</p>
 
 <section class="short" aria-labelledby="short">
   <h2 id="short">In short</h2>
@@ -138,11 +138,11 @@ body { container-type: inline-size; container-name: pg; }
 <p>Kubelo can use your phone's camera to read the colors of your own cube (<strong>Scan</strong>).</p>
 <ul>
   <li><strong>When the camera is used:</strong> only when you tap <strong>Scan</strong>. You can use everything else in the app without the camera.</li>
-  <li><strong>Permission:</strong> Before your browser asks, the app explains what the camera is for, and you can choose "Not now". The permission request itself comes from your browser. If you say no, the rest of the app still works.</li>
+  <li><strong>Permission:</strong> The app first explains what the camera is for. Nothing asks for the camera until you tap <strong>Use camera</strong>, and you can close the scan instead. In the Android app, Android asks for permission. In the iPhone app, iOS asks. In a browser, the browser asks. If you say no, the rest of the app still works.</li>
   <li><strong>What happens to the picture:</strong> The video is read in your phone's memory. The app measures the colors of the squares and keeps only those colors, to work out how your cube is mixed. <strong>No photos or videos are saved, and nothing from the camera is sent anywhere.</strong> No outside service, analytics, or AI model is involved. It all runs on your phone.</li>
   <li><strong>What is saved:</strong> The result is your cube's position, meaning which color is where. The app also remembers which camera you used, so it opens the same one next time. Both stay on your phone.</li>
   <li><strong>When the camera turns off:</strong> when the scan is done, when you close it, and as soon as the app is hidden or you switch apps. The flashlight is only on when you tap <strong>Light</strong>.</li>
-  <li><strong>To withdraw permission:</strong> touch and hold the app icon, choose "Site settings", and then "Camera". You can also go to your browser's settings, Site settings, Camera.</li>
+  <li><strong>To withdraw permission:</strong> for the Android app and the iPhone app, open your phone's Settings, find Kubelo among the apps, and turn off Camera. In a browser, open the browser's settings for this website and turn off Camera.</li>
 </ul>
 
 <h2 id="leaderboard">The leaderboard</h2>
@@ -197,7 +197,12 @@ body { container-type: inline-size; container-name: pg; }
 <p><strong>A new phone:</strong> save a backup first (… → Settings → Your data). It includes your leaderboard name and secret key, so your name and times come with you when you restore it. Whoever has the file can post in your name, so keep it private. If the new phone already has a leaderboard name, it keeps that one and the app tells you.</p>
 
 <h2>What is stored on your device</h2>
-<p>Kubelo keeps its data in your browser's storage on your device, tied to this website. If you install the app from Google Play, it opens full screen in your browser, usually Chrome, and the data is kept in the browser's storage on your phone. The names in the "Stored as" column are the storage keys, so you can check them in your browser's developer tools.</p>
+<p>Kubelo keeps its data on your device. Where on the device depends on how you use Kubelo.</p>
+<ul>
+  <li><strong>The Android app and the iPhone app</strong> keep the data inside the app itself. It is not in Chrome, Safari, or any other browser.</li>
+  <li><strong>In a browser</strong>, the data is kept in that browser's storage, tied to this website.</li>
+</ul>
+<p>The app and a browser on the same phone do not share data. The names in the "Stored as" column are the storage keys, so you can check them in a browser's developer tools.</p>
 <table>
   <thead>
     <tr><th scope="col">What</th><th scope="col">Contents</th><th scope="col">Stored as</th><th scope="col">Why</th></tr>
@@ -259,7 +264,7 @@ body { container-type: inline-size; container-name: pg; }
     </tr>
     <tr>
       <th scope="row">Camera choice</th>
-      <td data-label="Contents">An ID for the camera you used last. The browser makes this ID for this website only. It is not a photo and says nothing about you.</td>
+      <td data-label="Contents">An ID for the camera you used last. The ID is made on your device, for Kubelo only. It is not a photo and says nothing about you.</td>
       <td class="keys" data-label="Stored as"><code>kube.scan.camera</code></td>
       <td data-label="Why">So the scan opens the same camera.</td>
     </tr>
@@ -306,6 +311,12 @@ body { container-type: inline-size; container-name: pg; }
       <td data-label="Why">So the message does not show every time you open the app.</td>
     </tr>
     <tr>
+      <th scope="row">Graphics</th>
+      <td data-label="Contents">Whether you chose simpler graphics in Settings, when you last chose to start with simpler graphics after the graphics failed (that lasts 30 days), and a mark that is set while the app starts. If the mark is still there the next time, the last start failed, and the app starts with simpler graphics.</td>
+      <td class="keys" data-label="Stored as"><code>kube.graphics.choice.v1</code> <code>kube.graphics.simple.v1</code> <code>kube.graphics.starting.v1</code></td>
+      <td data-label="Why">So the app starts with graphics your phone can handle.</td>
+    </tr>
+    <tr>
       <th scope="row">Error log</th>
       <td data-label="Contents">The last 20 technical errors in the app: the error message, where in the code it happened (a stack trace), the app version, and the time.</td>
       <td class="keys" data-label="Stored as"><code>kube.errors.v1</code></td>
@@ -344,13 +355,13 @@ body { container-type: inline-size; container-name: pg; }
   </tbody>
 </table>
 <p>Kubelo does not store your email address, phone number, location, photos, or any other contact details. If you join the leaderboard, it stores the name you choose, which does not need to be your real name.</p>
-<p>The app asks the browser for persistent storage so that your data is not deleted when the device runs low on space. The browser may answer without asking you.</p>
+<p>The app asks for persistent storage so that your data is not deleted when the device runs low on space. The browser or the phone may answer without asking you.</p>
 
 <h2>What is sent from your device</h2>
 <p>Kubelo sends no information about you or how you use it off your device, unless you join the leaderboard. If you do, the app sends what is described under <a href="#leaderboard">The leaderboard</a>, and only when you do something there. Even then, we never receive your settings, your cube, the camera pictures, or anything else you do in the app. Only the solves you choose to post are sent.</p>
-<p>When you open the app for the first time, and when it checks for a new version, your device downloads the app's files from this website. The website is hosted by GitHub Pages (GitHub, Inc.).</p>
+<p>When you open the app for the first time, and when it checks for a new version, your device downloads the app's files from this website. The Android app and the iPhone app show the same web app, so they download the files from here too. The website is hosted by GitHub Pages (GitHub, Inc.).</p>
 <ul>
-  <li>As with any visit to a website, the host sees your IP address and the technical information your browser sends, such as the browser type. The host may keep this for a short time in logs for operations and security.</li>
+  <li>As with any visit to a website, the host sees your IP address and the technical information your browser or the app sends, such as the browser type. The host may keep this for a short time in logs for operations and security.</li>
   <li>We do not use these logs and do not combine them with any other information. The host's own privacy policy applies.</li>
   <li>The legal basis for this processing is our legitimate interest in delivering the app securely and reliably (GDPR Article 6(1)(f)).</li>
 </ul>
@@ -359,14 +370,14 @@ body { container-type: inline-size; container-name: pg; }
 <h2>When you share or save something yourself</h2>
 <p>This only happens when you tap a button, and we receive none of it.</p>
 <ul>
-  <li><strong>Challenge someone</strong> on the daily cube, and <strong>Share</strong> or <strong>Challenge</strong> on a solve, open your phone's share menu. The text contains the cube size, your time, and sometimes the number of moves or the date. The link goes to the app. In the app from Google Play, the text also ends with a link to Kubelo's page in Google Play. The link says only which kind of share it came from, never who you are. You choose where it goes. Without a share menu, the text is copied to the clipboard.</li>
+  <li><strong>Share</strong> after a solve and <strong>Share image</strong> in Records open your phone's share menu. You share a short text or a picture made on your phone, with the cube size, your time, and sometimes the number of moves or the date. The link goes to the app. In the Android app from Google Play, the text also ends with a link to Kubelo's page in Google Play. The link says only which kind of share it came from, never who you are. You choose where it goes. Without a share menu, the text or the picture is copied to the clipboard, or the picture is saved on your device.</li>
+  <li><strong>Send link</strong> under <strong>Challenge a friend</strong> shares a link to the app. The link holds the cube, your time on it if you have one, and your first name if you gave one. They are in the part of the address after #, which is never sent to our web host. Whoever gets the link can read them.</li>
   <li><strong>Share</strong> when you have solved the cube in the guide shares a short text with your time, without a link.</li>
-  <li><strong>Copy</strong> on a solve in Records copies how it was mixed to the clipboard.</li>
-  <li><strong>Export CSV</strong> in Records saves your solves for one size as a file on your device.</li>
-  <li><strong>Save a backup</strong> (… → Settings → Your data) saves a file to your Downloads. It holds your solves, settings, cubes in progress, guide progress and lessons, whether the introduction has been seen, and your leaderboard name with its secret key if you have joined. Replays of your solves are not included. Whoever has the file can post in your name on the leaderboard. It is not encrypted, so keep it like any other private file. You decide where it goes. The app never uploads it.</li>
+  <li><strong>Copy the moves</strong> on a solve in Records copies how it was mixed to the clipboard.</li>
+  <li><strong>Save a backup</strong> (… → Settings → Your data) saves a file. The Android app puts it in Downloads. The iPhone app opens the share menu, where you choose where to save it. A browser downloads it. The file holds your solves, settings, cubes in progress, guide progress and lessons, whether the introduction has been seen, and your leaderboard name with its secret key if you have joined. Replays of your solves are not included. Whoever has the file can post in your name on the leaderboard. It is not encrypted, so keep it like any other private file. You decide where it goes. The app never uploads it.</li>
   <li><strong>Restore from a file</strong> reads a file you choose, only on your device.</li>
   <li><strong>Copy</strong> in the error log (… → Settings → About Kubelo) copies the technical errors to the clipboard, so you can send them to us if you want to.</li>
-  <li><strong>Send feedback</strong> (… → Settings → About Kubelo → Write to us) opens your own email app with a ready text: the subject, the app version, and whether the scanner was used in this session. You see everything before it is sent and can delete any of it. If you send feedback, it goes from your own email app. Kubelo itself sends nothing. <strong>Rate</strong> (only in the app from Google Play) opens the app's page in Google Play.</li>
+  <li><strong>Send feedback</strong> (… → Settings → About Kubelo → Write to us) opens your own email app with a ready text. It has the subject, the app version, and whether the scanner was used in this session. It also says which graphics the app is using, how many times the graphics have failed, the name your browser or phone reports, and the screen size. That name includes the system version and often the phone model. You see everything before it is sent and can delete any of it. If you send feedback, it goes from your own email app. Kubelo itself sends nothing. <strong>Rate Kubelo</strong> (only in the Android app from Google Play) opens the app's page in Google Play.</li>
   <li><strong>Solve a real cube by hand</strong> (in the menu, when it has a beginner video) opens a video. If you open the beginner video, it opens on YouTube, and YouTube's own privacy policy applies there. Kubelo does not embed YouTube or send anything to it.</li>
 </ul>
 
@@ -387,15 +398,16 @@ body { container-type: inline-size; container-name: pg; }
 <p>Children can use Kubelo. The app has no chat, no ads, and no purchases. Unless you join the leaderboard, it collects no personal data from anyone, including children. The leaderboard is only for people aged 13 or older: you confirm this when you join, and the app does not let you join without it. This also applies to the camera: the pictures are only read on the phone and are never saved or sent.</p>
 
 <h2>How long data is kept, and how to delete it</h2>
-<p>Your data stays on your device until you delete it. The browser may also delete it by itself if the device runs low on space and persistent storage has not been granted.</p>
+<p>Your data stays on your device until you delete it. A browser may also delete it by itself if the device runs low on space and persistent storage has not been granted.</p>
 <ul>
   <li><strong>The leaderboard:</strong> choose <strong>Leave the leaderboard</strong> in World, or use <strong>Delete all data</strong> while you are online. See <a href="#leaderboard-delete">Delete your leaderboard data</a>, also for when you no longer have your phone.</li>
   <li><strong>Solves:</strong> In Records you can delete solves one by one, or delete all solves for a size. This also deletes their replays.</li>
-  <li><strong>Everything in the app:</strong> Choose … → Settings → Your data → <strong>Delete all data</strong>. This deletes everything in the table above from your device: your times and records, guide progress, lessons, saved cubes, settings, camera choice, error log, the replays of your solves, and the landscape cache. The app starts again as new, on the home screen. The app's own files stay, so it still works offline.</li>
-  <li><strong>Everything on an Android phone:</strong> Touch and hold the app icon, choose "Site settings", and delete the data. You can also go to your browser's settings, Site settings, All sites, find this website, and delete the data there. This also removes the camera permission.</li>
-  <li><strong>Everything in a browser:</strong> Delete the site data for this website in your browser's settings.</li>
-  <li><strong>Note:</strong> Uninstalling the app does not necessarily delete the data, because it is kept in the browser. Save a backup first if you want to keep it.</li>
-  <li><strong>Backups and CSV files</strong> are deleted like any other file.</li>
+  <li><strong>Everything in the app:</strong> Choose … → Settings → Your data → <strong>Delete all data</strong>. This deletes everything in the table above from your device: your times and records, guide progress, lessons, saved cubes, settings, camera choice, error log, the replays of your solves, and the landscape cache. The app starts again as new, on the home screen. The app's own files stay, so it still works offline. The camera permission also stays until you turn it off (see <strong>Camera</strong> above).</li>
+  <li><strong>The Android app:</strong> Uninstalling the app deletes its data from the phone. You can also open your phone's Settings, find Kubelo among the apps, and clear its storage.</li>
+  <li><strong>The iPhone app:</strong> Deleting the app deletes its data from the phone.</li>
+  <li><strong>In a browser:</strong> Delete the site data for this website in your browser's settings. If you used Kubelo in a browser before you got the app, that data is still in the browser until you delete it there.</li>
+  <li><strong>Note:</strong> Uninstalling the app does not remove you from the leaderboard. Leave the leaderboard first. And save a backup first if you want to keep your times.</li>
+  <li><strong>Backup files and saved pictures</strong> are deleted like any other file.</li>
 </ul>
 
 <h2>Security</h2>
