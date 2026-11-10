@@ -6,8 +6,8 @@
   var sw = document.getElementById('switch');
   var TITLE = { en: 'Test Kubelo before launch | Kubelo', nb: 'Test Kubelo før lanseringen | Kubelo' };
   var DESC = {
-    en: 'Kubelo is a free cube app for Android and iPhone. Help us test it before it launches on Google Play.',
-    nb: 'Kubelo er en gratis kubeapp for Android og iPhone. Hjelp oss å teste appen før den kommer på Google Play.'
+    en: 'Kubelo is a free cube app for Android and iPhone. Become a tester before it comes out.',
+    nb: 'Kubelo er en gratis kubeapp for Android og iPhone. Bli tester før den kommer ut.'
   };
 
   // A link in config.js shows its button; while it is still a placeholder (not an https address), the button stays hidden and the line «comes here soon» stands in its place.
