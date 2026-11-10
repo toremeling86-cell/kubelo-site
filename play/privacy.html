@@ -117,12 +117,12 @@ body { container-type: inline-size; container-name: pg; }
 </div>
 
 <h1>Privacy policy</h1>
-<p class="updated">Last updated: November 9, 2026</p>
+<p class="updated">Last updated: November 10, 2026</p>
 
 <section class="short" aria-labelledby="short">
   <h2 id="short">In short</h2>
   <ul>
-    <li>Kubelo has <strong>no account, no ads, no analytics, and no tracking</strong>. To join the leaderboard you only choose a name: no email and no password.</li>
+    <li>You need <strong>no account</strong> to use Kubelo, and it has <strong>no ads, no analytics, and no tracking</strong>. The leaderboard is the one exception: to join you choose a name (no email and no password), and you can delete that name and its times yourself.</li>
     <li>Everything you do in the app is stored <strong>only on your device</strong>: your times, records, guide progress, settings, and cubes. Nothing about you leaves your device unless you use the leaderboard or share something yourself (see below).</li>
     <li><strong>The camera is used only to read the colors of your own cube.</strong> The camera pictures are read in memory. They are never saved and never sent anywhere.</li>
     <li><strong>The leaderboard is optional, and for people aged 13 or older.</strong> If you join, the name you choose, your best times, and a replay of each solve you post are public. They are kept on a server in the EU. Before you join, the app only asks the server for the lists and for a cube to solve. None of that includes your name or anything about you.</li>
@@ -172,7 +172,7 @@ body { container-type: inline-size; container-name: pg; }
   <li>The legal basis is a contract with you, to give you the list you asked to join (GDPR Article 6(1)(b)), and our legitimate interest in security, checking for cheating, and moderation (Article 6(1)(f)).</li>
   <li>Tore Meling is the data controller. The server runs on Cloudflare, Inc., which acts as our data processor under its data processing agreement. The data is stored in a Cloudflare D1 database in the EU. Requests are handled at the Cloudflare location closest to you.</li>
   <li><strong>Your IP address:</strong> as with any visit to a website, Cloudflare sees your IP address. It is used briefly in memory to limit the number of requests, and we do not store it. If a request is blocked for too many tries, Cloudflare's security log keeps the IP address for a short time.</li>
-  <li><strong>Logs:</strong> technical logs without your IP address or key (the path, the status, and how long a request took) are kept for at most 3 days.</li>
+  <li><strong>Logs:</strong> technical logs without your IP address or key (the path, the status, and how long a request took) are kept for at most 7 days.</li>
   <li>The solves are checked by computer. Times that look impossible, and very fast times on the all-time list, are looked at by a person before they appear. Nobody is profiled, and no decision about you is made by a computer alone.</li>
 </ul>
 
@@ -190,7 +190,7 @@ body { container-type: inline-size; container-name: pg; }
 <h3 id="leaderboard-delete">Delete your leaderboard data</h3>
 <ul>
   <li><strong>In the app:</strong> open World, tap your name, and choose <strong>Leave the leaderboard</strong>. Your name and all your times are removed from the server. Your solves stay on your phone.</li>
-  <li><strong>With Delete all data:</strong> if you have joined and you are online, the app first removes you from the leaderboard, then deletes everything on your device. If you are offline, the app tells you. You can then choose <strong>Delete anyway</strong>, and your name and times stay on the server until you ask us to remove them.</li>
+  <li><strong>With Delete all data:</strong> if you have joined and you are online, the app first removes you from the leaderboard, then deletes everything on your device. If you are offline, the app tells you. You can still choose <strong>Delete all</strong>, and your name and times then stay on the server until you ask us to remove them.</li>
   <li><strong>If you have lost your phone, or cannot open the app:</strong> write to <a href="mailto:kontakt@kubelo.app">kontakt@kubelo.app</a> with your leaderboard name and roughly when you set your best time. We delete it when we can reasonably tell that it is yours. If we are unsure, we hide the place instead until the owner gets in touch.</li>
   <li><strong>If you never made a backup:</strong> the name stays on the server without an owner, and nobody else can take it. It is deleted by itself 24 months after the last posted solve.</li>
 </ul>
@@ -305,6 +305,18 @@ body { container-type: inline-size; container-name: pg; }
       <td data-label="Why">So the post is not lost.</td>
     </tr>
     <tr>
+      <th scope="row">A round in progress</th>
+      <td data-label="Contents">If you play a round on the leaderboard: the round and the solves so far (times and moves), and a result that has not been sent yet. It is deleted when the round is done or has run out.</td>
+      <td class="keys" data-label="Stored as"><code>kube.board.round.v1</code></td>
+      <td data-label="Why">So a round you leave can go on, and no result is lost.</td>
+    </tr>
+    <tr>
+      <th scope="row">Saved leagues</th>
+      <td data-label="Contents">The last league lists and your place that you opened: names, times, and dates of the players on them, and the league you last saw yourself in.</td>
+      <td class="keys" data-label="Stored as"><code>kube.board.leagues.v1</code></td>
+      <td data-label="Why">So you can read them without a connection, and a move up is only announced once.</td>
+    </tr>
+    <tr>
       <th scope="row">The moving message</th>
       <td data-label="Contents">Only in the last version on the old web address: the time after which the message about Kubelo moving to Google Play may show again (three days after you tap "Not now").</td>
       <td class="keys" data-label="Stored as"><code>kube.farewell.snooze.v1</code></td>
@@ -342,9 +354,15 @@ body { container-type: inline-size; container-name: pg; }
     </tr>
     <tr>
       <th scope="row">Landscape cache</th>
-      <td data-label="Contents">Computed terrain for the background, at most 40 MB. It is rebuilt when needed. The pictures for the Earth view, when you choose it, are loaded from the same address as the app and stored on your phone.</td>
+      <td data-label="Contents">Computed terrain for the background, at most 40 MB. It is rebuilt when needed.</td>
       <td class="keys" data-label="Stored as"><code>kube-terrain</code> (IndexedDB)</td>
       <td data-label="Why">Faster start-up.</td>
+    </tr>
+    <tr>
+      <th scope="row">Earth pictures</th>
+      <td data-label="Contents">The pictures for the Earth view, when you choose it. They are loaded from the same address as the app.</td>
+      <td class="keys" data-label="Stored as"><code>kube-steder</code> (the browser's cache storage)</td>
+      <td data-label="Why">So the Earth view is downloaded once and works offline.</td>
     </tr>
     <tr>
       <th scope="row">App files</th>
@@ -402,7 +420,7 @@ body { container-type: inline-size; container-name: pg; }
 <ul>
   <li><strong>The leaderboard:</strong> choose <strong>Leave the leaderboard</strong> in World, or use <strong>Delete all data</strong> while you are online. See <a href="#leaderboard-delete">Delete your leaderboard data</a>, also for when you no longer have your phone.</li>
   <li><strong>Solves:</strong> In Records you can delete solves one by one, or delete all solves for a size. This also deletes their replays.</li>
-  <li><strong>Everything in the app:</strong> Choose … → Settings → Your data → <strong>Delete all data</strong>. This deletes everything in the table above from your device: your times and records, guide progress, lessons, saved cubes, settings, camera choice, error log, the replays of your solves, and the landscape cache. The app starts again as new, on the home screen. The app's own files stay, so it still works offline. The camera permission also stays until you turn it off (see <strong>Camera</strong> above).</li>
+  <li><strong>Everything in the app:</strong> Choose … → Settings → Your data → <strong>Delete all data</strong>. This deletes everything in the table above from your device: your times and records, guide progress, lessons, saved cubes, settings, camera choice, error log, the replays of your solves, the landscape cache, and the Earth pictures. The app starts again as new, on the home screen. The app's own files stay, so it still works offline. The camera permission also stays until you turn it off (see <strong>Camera</strong> above).</li>
   <li><strong>The Android app:</strong> Uninstalling the app deletes its data from the phone. You can also open your phone's Settings, find Kubelo among the apps, and clear its storage.</li>
   <li><strong>The iPhone app:</strong> Deleting the app deletes its data from the phone.</li>
   <li><strong>In a browser:</strong> Delete the site data for this website in your browser's settings. If you used Kubelo in a browser before you got the app, that data is still in the browser until you delete it there.</li>
