@@ -1,0 +1,1 @@
+import{Ht as e}from"./index-B3wQKBe1.js";import{r as t}from"./debug-e29s2OK3.js";var n=()=>e()&&t(`size2`)!==null;export{n as t};

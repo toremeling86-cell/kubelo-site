@@ -161,7 +161,7 @@ body { container-type: inline-size; container-name: pg; }
 
 <h3>Who sees what</h3>
 <ul>
-  <li><strong>Everyone</strong> who opens the leaderboard sees your name, your best times, and the dates. Anyone can also watch a replay of a solve you post, with all its moves. The replay is there for 30 days, and the replay of your best time stays as long as the time does. Your name does not need to be your real name, and the app suggests one you can use.</li>
+  <li><strong>Everyone</strong> who opens the leaderboard sees your name, your best times, and the dates. Your name does not need to be your real name, and the app suggests one you can use. Anyone can also watch a replay of a solve you post, with all its moves. A replay stays up for 30 days. The replay of your best time on the all-time list stays as long as it is your best.</li>
   <li><strong>Your player ID</strong> is public too. It is a random code, not your name. It appears in the lists and in links to a place, so anyone can see which times belong to the same ID.</li>
   <li><strong>Reports and moderation:</strong> everyone can report a name or a time. A name is hidden automatically when several players report it, and we may hide a name or a time, or stop a player from posting. A hidden name shows as "Player" with a number. We aim to answer reports within 48 hours.</li>
   <li><strong>Blocking:</strong> you can block a player. This is stored only on your phone. Their name is replaced by "Blocked player", and their time stays on the list.</li>
@@ -172,7 +172,7 @@ body { container-type: inline-size; container-name: pg; }
   <li>The legal basis is a contract with you, to give you the list you asked to join (GDPR Article 6(1)(b)), and our legitimate interest in security, checking for cheating, and moderation (Article 6(1)(f)).</li>
   <li>Tore Meling is the data controller. The server runs on Cloudflare, Inc., which acts as our data processor under its data processing agreement. The data is stored in a Cloudflare D1 database in the EU. Requests are handled at the Cloudflare location closest to you.</li>
   <li><strong>Your IP address:</strong> as with any visit to a website, Cloudflare sees your IP address. It is used briefly in memory to limit the number of requests, and we do not store it. If a request is blocked for too many tries, Cloudflare's security log keeps the IP address for a short time.</li>
-  <li><strong>Logs:</strong> technical logs without your IP address or key (the path, the status, and how long a request took) are kept for at most 7 days.</li>
+  <li><strong>Logs:</strong> we keep technical logs, without your IP address or secret key, for at most 7 days. For each request they show what kind it was, which part of the server it went to, the result, any error code or error name, and how long it took. The server's own jobs also log what they did, with counts and error names.</li>
   <li>The solves are checked by computer. Times that look impossible, and very fast times on the all-time list, are looked at by a person before they appear. Nobody is profiled, and no decision about you is made by a computer alone.</li>
 </ul>
 
@@ -180,10 +180,10 @@ body { container-type: inline-size; container-name: pg; }
 <ul>
   <li>Your player and your solves: until you leave, or 24 months after your last posted solve.</li>
   <li>Used tickets and rejected attempts: 30 days.</li>
-  <li>The moves of a solve: 30 days. After that the time stays, without the replay. The moves of your best time are kept as long as the time, and the moves of a solve that is waiting for review are kept until it has been reviewed.</li>
-  <li>A name we have hidden: when you change it, the old name is held for you for 30 days, so nobody else can take it.</li>
+  <li>The moves of a solve: 30 days. After that the time stays, without the replay. The moves of your best time on the all-time list are kept while it is still your best. The moves of a solve waiting for review are kept until it has been reviewed.</li>
+  <li>A hidden name: when you change it, the old name is held for you for 30 days, so nobody else can take it.</li>
   <li>Reports: 90 days. A handled report is deleted 90 days after it was handled, and a report nobody has looked at is deleted 90 days after it was made.</li>
-  <li>The log of moderation actions: 12 months. When a player is deleted, the lines in the log about that player and the player's solves lose their target, so no player ID is left. Only a line saying that a player was deleted stays, without an ID or a name.</li>
+  <li>The log of moderation actions: 12 months. When a player is deleted, the log keeps no player ID and nothing else that points to that player. The deletion itself is recorded as one line, without an ID or a name.</li>
 </ul>
 
 <h3>Age</h3>
