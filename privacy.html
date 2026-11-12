@@ -117,7 +117,7 @@ body { container-type: inline-size; container-name: pg; }
 </div>
 
 <h1>Privacy policy</h1>
-<p class="updated">Last updated: November 10, 2026</p>
+<p class="updated">Last updated: November 12, 2026</p>
 
 <section class="short" aria-labelledby="short">
   <h2 id="short">In short</h2>
@@ -125,7 +125,7 @@ body { container-type: inline-size; container-name: pg; }
     <li>You need <strong>no account</strong> to use Kubelo, and it has <strong>no ads, no analytics, and no tracking</strong>. The leaderboard is the one exception: to join you choose a name (no email and no password), and you can delete that name and its times yourself.</li>
     <li>Everything you do in the app is stored <strong>only on your device</strong>: your times, records, guide progress, settings, and cubes. Nothing about you leaves your device unless you use the leaderboard or share something yourself (see below).</li>
     <li><strong>The camera is used only to read the colors of your own cube.</strong> The camera pictures are read in memory. They are never saved and never sent anywhere.</li>
-    <li><strong>The leaderboard is optional, and for people aged 13 or older.</strong> If you join, the name you choose, your best times, and a replay of each solve you post are public. They are kept on a server in the EU. Before you join, the app only asks the server for the lists and for a cube to solve. None of that includes your name or anything about you.</li>
+    <li><strong>The leaderboard is optional, and for people aged 13 or older.</strong> If you join, the name you choose, your best times and averages, and a replay of each solve you post are public. They are kept on a server in the EU. Before you join, the app only asks the server for a cube to solve, whether the leagues are open, and the list, place, round, or replay you open. If you report a time or a name, it also sends the report. None of that includes your name or anything about you.</li>
     <li>You can delete everything at any time with <strong>Delete all data</strong>.</li>
     <li>Vibration can be turned off in the settings.</li>
   </ul>
@@ -146,22 +146,28 @@ body { container-type: inline-size; container-name: pg; }
 </ul>
 
 <h2 id="leaderboard">The leaderboard</h2>
-<p>The leaderboard is optional. You can use everything else in Kubelo without it. It lists the fastest ranked solves of the 3×3 on the screen, for this week and for all time. A ranked solve starts from a cube made by the Kubelo server, has 15 seconds of inspection, and has Help and Undo off. Solves with a real cube are not on the leaderboard. Read the <a href="./leaderboard-rules.html">leaderboard rules</a> before you join.</p>
+<p>The leaderboard is optional. You can use everything else in Kubelo without it. It lists the fastest ranked solves of the 3×3 on the screen, for this week and for all time. It also has leagues: you play a round of 5 ranked solves, and the average puts you in a league. A ranked solve starts from a cube made by the Kubelo server, has 15 seconds of inspection, and has Help and Undo off. Solves with a real cube are not on the leaderboard. Read the <a href="./leaderboard-rules.html">leaderboard rules</a> before you join.</p>
 
 <h3>What is sent, and when</h3>
-<p>The app only talks to the Kubelo server when you do something with the leaderboard. Nothing is sent in the background, with one exception that you asked for yourself: a solve you chose to post while you were offline waits on your phone, and is sent when you are back online, as long as its ticket is still valid (2 hours). After that it is dropped.</p>
+<p>The app only talks to the Kubelo server when you do something with the leaderboard. Nothing is sent in the background, with one exception that you asked for yourself: a solve you chose to post while you were offline waits on your phone, and is sent when you are back online, as long as its ticket is still valid (2 hours). After that it is dropped. A round works the same way. A result that could not be sent, or a round you chose to post while you were offline, waits on your phone. It is sent when you are back online with the app open. If the round has run out of time by then, it is dropped.</p>
 <ul>
-  <li><strong>When you open World:</strong> the app asks for the list, whether or not you have joined. If you have joined, it also asks where you stand, using your secret key.</li>
+  <li><strong>When you open World:</strong> the app asks for the lists and whether the leagues are open. It does this even if you have not joined. If you have joined, it also asks where you stand, using your secret key.</li>
+  <li><strong>When you open a place or a round on a list, or watch a replay:</strong> the app asks the server for it. Your secret key is not sent.</li>
+  <li><strong>When you tap Play for the leaderboard:</strong> the app asks the server whether the leagues are open, unless it already knows that they are.</li>
   <li><strong>When you start a ranked solve, and each time you tap Scramble to get the next one:</strong> the app asks the server for a new cube. The answer is a <strong>ticket</strong>: the position of the cube, a random attempt ID, and an expiry time, signed by the server. If you have joined, the request includes your secret key, so the ticket is made for you. The app never asks for a ticket in advance or in the background, only in a ranked solve you started.</li>
   <li><strong>When you join:</strong> the name you chose, a secret key (random, made on your phone), and your confirmation that you are 13 or older and accept the rules. The server answers with a random player ID.</li>
+  <li><strong>When the rules change and you accept the new ones:</strong> your secret key and the version of the rules you accepted.</li>
   <li><strong>When you post a solve:</strong> your secret key, the ticket the server gave you, the time, any +2 penalty, how long you looked at the cube first (the inspection time), every move with the time it was made, whether you moved the cube by dragging or with buttons, and the app version. The inspection time is only used by the server to check the penalty, and is not stored.</li>
-  <li><strong>When you report a time or a name, change your name, or leave:</strong> the report (the solve and one of three fixed reasons, no free text), the new name, or the request to delete everything.</li>
+  <li><strong>When you play a round of 5:</strong> you need to have joined first. The app asks the server to start the round, and then asks for the cubes one at a time. It also asks where you stand in your league. When a solve is done, the app sends the result right away, not when you post. It is the same information as when you post a solve. If you do not finish a solve, the app tells the server, and gives the reason: for example, that you left the app or that the time ran out. If you end the round early, the app tells the server that too. If your phone and the server disagree about the round, the app gets the round from the server again. All of this is sent with your secret key. Nobody else sees the round unless you post it.</li>
+  <li><strong>When you post a round:</strong> your secret key and which round it is. The results are already on the server.</li>
+  <li><strong>When you report a time or a name, change your name, or leave:</strong> the report (the solve and one of three fixed reasons, no free text), the new name, or the request to delete everything. If you have joined, your report is sent with your secret key. The server keeps your player ID with the report, so each player counts once.</li>
 </ul>
-<p>The server stores your name, the random player ID, a hash of your secret key (not the key itself), the date you joined, and for each solve you post the time, any +2 penalty, how the moves were made (dragging, buttons, or both), the moves with their times, the date, and the app version. It also keeps the ID of each ticket you have used, so a ticket counts once. It does not store your IP address, and it does not store the inspection time.</p>
+<p>The server stores your name, the random player ID, a hash of your secret key (not the key itself), and the date you joined. It also stores the version of the rules you accepted, the last time you changed your name, and the last time you posted. For each solve you post, it stores the time, any +2 penalty, how the moves were made (dragging, buttons, or both), the moves with their times, the date, and the app version. For a round it stores the same for each of the 5 solves. It also stores any solve you did not finish and the reason, when the round started and ended, your average, and your league. For every solve, it keeps the position the cube started from and what the check found. It also keeps the ID of each ticket you have used, so a ticket counts once. It does not store your IP address, and it does not store the inspection time.</p>
 
 <h3>Who sees what</h3>
 <ul>
   <li><strong>Everyone</strong> who opens the leaderboard sees your name, your best times, and the dates. Your name does not need to be your real name, and the app suggests one you can use. Anyone can also watch a replay of a solve you post, with all its moves. A replay stays up for 30 days. The replay of your best time on the all-time list stays as long as it is your best.</li>
+  <li><strong>In the leagues,</strong> everyone sees your name, your best average of the week, and the 5 times behind it. Anyone can watch a replay of each of those solves. The replays of a round stay up for the rest of the week you finished it in and all of the next week. They are deleted early on the Monday after that. The replays of your best round ever stay as long as it is your best. The fastest solve in a round you post can also go on the lists of fastest solves, like a single solve you post.</li>
   <li><strong>Your player ID</strong> is public too. It is a random code, not your name. It appears in the lists and in links to a place, so anyone can see which times belong to the same ID.</li>
   <li><strong>Reports and moderation:</strong> everyone can report a name or a time. A name is hidden automatically when several players report it, and we may hide a name or a time, or stop a player from posting. A hidden name shows as "Player" with a number. We aim to answer reports within 48 hours.</li>
   <li><strong>Blocking:</strong> you can block a player. This is stored only on your phone. Their name is replaced by "Blocked player", and their time stays on the list.</li>
@@ -173,14 +179,18 @@ body { container-type: inline-size; container-name: pg; }
   <li>Tore Meling is the data controller. The server runs on Cloudflare, Inc., which acts as our data processor under its data processing agreement. The data is stored in a Cloudflare D1 database in the EU. Requests are handled at the Cloudflare location closest to you.</li>
   <li><strong>Your IP address:</strong> as with any visit to a website, Cloudflare sees your IP address. It is used briefly in memory to limit the number of requests, and we do not store it. If a request is blocked for too many tries, Cloudflare's security log keeps the IP address for a short time.</li>
   <li><strong>Logs:</strong> we keep technical logs, without your IP address or secret key, for at most 7 days. For each request they show what kind it was, which part of the server it went to, the result, any error code or error name, and how long it took. The server's own jobs also log what they did, with counts and error names.</li>
-  <li>The solves are checked by computer. Times that look impossible, and very fast times on the all-time list, are looked at by a person before they appear. Nobody is profiled, and no decision about you is made by a computer alone.</li>
+  <li>The solves are checked by computer. A solve that does not pass the check is not accepted. A solve or a round that looks unlikely is held back until a person has looked at it. Everything else is accepted right away. Nobody is profiled.</li>
 </ul>
 
 <h3>How long it is kept</h3>
 <ul>
-  <li>Your player and your solves: until you leave, or 24 months after your last posted solve.</li>
+  <li>Your player, your solves, and your rounds: until you leave, or 24 months after your last posted solve or round.</li>
   <li>Used tickets and rejected attempts: 30 days.</li>
   <li>The moves of a solve: 30 days. After that the time stays, without the replay. The moves of your best time on the all-time list are kept while it is still your best. The moves of a solve waiting for review are kept until it has been reviewed.</li>
+  <li>A round you do not finish in 60 minutes, or do not post in the 2 hours after: its solves are deleted within minutes. The round itself is deleted within 2 days.</li>
+  <li>The moves of a round on the list: for the rest of the week you finished it in and all of the next week. They are deleted early on the Monday after that (UTC). The average and the 5 times stay, without the replays. The moves of your best round ever are kept while it is still your best. The moves of a round waiting for review are kept until it has been reviewed.</li>
+  <li>Only your best round each week is kept, plus one that is waiting for review. When a better one goes on the list, the replays of the earlier one are deleted at once, and the round itself within 2 days. The same happens to a round you post that is not better.</li>
+  <li>A round we have hidden: until 30 days after it was posted.</li>
   <li>A hidden name: when you change it, the old name is held for you for 30 days, so nobody else can take it.</li>
   <li>Reports: 90 days. A handled report is deleted 90 days after it was handled, and a report nobody has looked at is deleted 90 days after it was made.</li>
   <li>The log of moderation actions: 12 months. When a player is deleted, the log keeps no player ID and nothing else that points to that player. The deletion itself is recorded as one line, without an ID or a name.</li>
@@ -308,15 +318,15 @@ body { container-type: inline-size; container-name: pg; }
     </tr>
     <tr>
       <th scope="row">A round in progress</th>
-      <td data-label="Contents">If you play a round on the leaderboard: the round and the solves so far (times and moves), and a result that has not been sent yet. It is deleted when the round is done or has run out.</td>
+      <td data-label="Contents">If you play a round on the leaderboard: the round and the solves so far (times and moves), and a result that has not been sent yet. It is kept while the round goes on, while you decide whether to post it, and while it waits to be sent. After that it is deleted. If the time runs out first, it is deleted the next time the app is open and online.</td>
       <td class="keys" data-label="Stored as"><code>kube.board.round.v1</code></td>
       <td data-label="Why">So a round you leave can go on, and no result is lost.</td>
     </tr>
     <tr>
       <th scope="row">Saved leagues</th>
-      <td data-label="Contents">The last league lists and your place that you opened: names, times, and dates of the players on them, and the league you last saw yourself in.</td>
+      <td data-label="Contents">The last league lists and your place that you opened: names, times, and dates of the players on them, and the league you last saw yourself in. Also the server's most recent answer about whether the leagues are open.</td>
       <td class="keys" data-label="Stored as"><code>kube.board.leagues.v1</code></td>
-      <td data-label="Why">So you can read them without a connection, and a move up is only announced once.</td>
+      <td data-label="Why">So you can read them without a connection, and a move up is only announced once. The app also knows whether to show the leagues while it waits for the server.</td>
     </tr>
     <tr>
       <th scope="row">The moving message</th>
