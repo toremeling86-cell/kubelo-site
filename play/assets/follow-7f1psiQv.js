@@ -1,1 +1,0 @@
-import{Ut as e}from"./index-DFvUL8Cu.js";import{r as t}from"./debug-e29s2OK3.js";var n=()=>e()&&t(`board2`)!==``;export{n as t};
