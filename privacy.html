@@ -117,7 +117,7 @@ body { container-type: inline-size; container-name: pg; }
 </div>
 
 <h1>Privacy policy</h1>
-<p class="updated">Last updated: November 12, 2026</p>
+<p class="updated">Last updated: November 14, 2026</p>
 
 <section class="short" aria-labelledby="short">
   <h2 id="short">In short</h2>
@@ -144,6 +144,9 @@ body { container-type: inline-size; container-name: pg; }
   <li><strong>When the camera turns off:</strong> when the scan is done, when you close it, and as soon as the app is hidden or you switch apps. The flashlight is only on when you tap <strong>Light</strong>.</li>
   <li><strong>To withdraw permission:</strong> for the Android app and the iPhone app, open your phone's Settings, find Kubelo among the apps, and turn off Camera. In a browser, open the browser's settings for this website and turn off Camera.</li>
 </ul>
+
+<h2>Smart cube (Bluetooth)</h2>
+<p>If you connect a smart cube, Kubelo reads its moves over Bluetooth so the cube on screen follows yours. The app asks for access only when you connect. Anything the app saves about the cube stays on your phone. The app remembers the cube's address, which it needs to read the moves. <strong>Delete all data</strong> in the menu removes the address. Nothing about the cube is sent to us or anyone else.</p>
 
 <h2 id="leaderboard">The leaderboard</h2>
 <p>The leaderboard is optional. You can use everything else in Kubelo without it. It lists the fastest ranked solves of the 3×3 on the screen, for this week and for all time. It also has leagues: you play a round of 5 ranked solves, and the average puts you in a league. A ranked solve starts from a cube made by the Kubelo server, has 15 seconds of inspection, and has Help and Undo off. Solves with a real cube are not on the leaderboard. Read the <a href="./leaderboard-rules.html">leaderboard rules</a> before you join.</p>
@@ -222,7 +225,7 @@ body { container-type: inline-size; container-name: pg; }
   <tbody>
     <tr>
       <th scope="row">Your solves</th>
-      <td data-label="Contents">Time, number of moves, when the solve was completed, how the cube was mixed, any penalty (+2 or DNF), whether inspection was on, whether Help was used, whether you solved on the screen or with a real cube, and the date if it was the daily cube.</td>
+      <td data-label="Contents">Time, number of moves, when the solve was completed, how the cube was mixed, any penalty (+2 or DNF), whether inspection was on, whether Help was used, whether you solved on the screen, with the real-cube timer, or with a smart cube, and the date if it was the daily cube.</td>
       <td class="keys" data-label="Stored as"><code>kube.solves.v1</code></td>
       <td data-label="Why">Records and statistics.</td>
     </tr>
@@ -252,15 +255,15 @@ body { container-type: inline-size; container-name: pg; }
     </tr>
     <tr>
       <th scope="row">Settings</th>
-      <td data-label="Contents">For example size, finish, colors, time of day, controls, sound, vibration, inspection, and the real-cube timer.</td>
+      <td data-label="Contents">For example size, finish, colors, time of day, controls, sound, vibration, and inspection.</td>
       <td class="keys" data-label="Stored as"><code>kube.settings.v1</code></td>
       <td data-label="Why">So the app stays the way you set it.</td>
     </tr>
     <tr>
       <th scope="row">Choices in the interface</th>
-      <td data-label="Contents">Options that only concern the look and feel on this device, such as the glass style, the language, and the real-cube timer.</td>
+      <td data-label="Contents">Options that apply only to this device, such as the real-cube timer and whether <strong>Smart cube</strong> is turned on.</td>
       <td class="keys" data-label="Stored as"><code>kube.ui.v1</code></td>
-      <td data-label="Why">So the app looks the way you chose.</td>
+      <td data-label="Why">So the app works the way you chose.</td>
     </tr>
     <tr>
       <th scope="row">Where you are in the app</th>
@@ -336,9 +339,15 @@ body { container-type: inline-size; container-name: pg; }
     </tr>
     <tr>
       <th scope="row">Graphics</th>
-      <td data-label="Contents">Whether you chose simpler graphics in Settings, when you last chose to start with simpler graphics after the graphics failed (that lasts 30 days), and a mark that is set while the app starts. If the mark is still there the next time, the last start failed, and the app starts with simpler graphics.</td>
+      <td data-label="Contents">Whether you chose simpler graphics in Settings, when you last chose to start with simpler graphics after the graphics failed (that lasts 30 days), and a mark that is set while the app starts. If the mark is still there the next time, that start failed. After two failed starts in a row, the app uses simpler graphics for 30 days, unless you chose the graphics in Settings.</td>
       <td class="keys" data-label="Stored as"><code>kube.graphics.choice.v1</code> <code>kube.graphics.simple.v1</code> <code>kube.graphics.starting.v1</code></td>
       <td data-label="Why">So the app starts with graphics your phone can handle.</td>
+    </tr>
+    <tr>
+      <th scope="row">Smart cube</th>
+      <td data-label="Contents">The address and name of your smart cube, and the ID your browser or phone uses for it. None of it is ever sent.</td>
+      <td class="keys" data-label="Stored as"><code>kube.smartcube.v1</code></td>
+      <td data-label="Why">The cube locks its moves with its address, so the app needs it to read them.</td>
     </tr>
     <tr>
       <th scope="row">Error log</th>
@@ -360,7 +369,7 @@ body { container-type: inline-size; container-name: pg; }
     </tr>
     <tr>
       <th scope="row">Replays of your solves</th>
-      <td data-label="Contents">The moves of each solve you did on the screen, and when you made each move, so a solve can be played back on the cube. Only your best solve and your first solve for each size are kept for good; of the rest, the latest 300. A replay is deleted when you delete its solve. Solves with a real cube have none.</td>
+      <td data-label="Contents">The moves of each solve you did on the screen or with a smart cube, and when you made each move, so a solve can be played back on the cube. Only your best solve and your first solve for each size are kept for good; of the rest, the latest 300. A replay is deleted when you delete its solve. Solves timed with the real-cube timer have none.</td>
       <td class="keys" data-label="Stored as"><code>kube-replays</code> (IndexedDB)</td>
       <td data-label="Why">So Records can play back your best solve. Replays are not part of a backup.</td>
     </tr>
@@ -422,7 +431,7 @@ body { container-type: inline-size; container-name: pg; }
 </ul>
 
 <h2>Other permissions</h2>
-<p>Apart from the camera, Kubelo does not ask for microphone, location, contacts, or notifications, and it only reads files you choose yourself. Sound is generated in the app. Vibration can be turned off in the settings. While you solve, the app keeps the screen awake.</p>
+<p>Apart from the camera and Bluetooth for a smart cube, Kubelo does not ask for microphone, location, contacts, or notifications, and it only reads files you choose yourself. On Android 12 and newer, the Bluetooth permission is called <strong>Nearby devices</strong>. On Android, the app may ask you to turn on Location while the phone looks for the cube, but Kubelo cannot see where you are. Sound is generated in the app. Vibration can be turned off in the settings. While you solve, the app keeps the screen awake.</p>
 
 <h2>Children</h2>
 <p>Children can use Kubelo. The app has no chat, no ads, and no purchases. Unless you join the leaderboard, it collects no personal data from anyone, including children. The leaderboard is only for people aged 13 or older: you confirm this when you join, and the app does not let you join without it. This also applies to the camera: the pictures are only read on the phone and are never saved or sent.</p>
@@ -432,7 +441,7 @@ body { container-type: inline-size; container-name: pg; }
 <ul>
   <li><strong>The leaderboard:</strong> choose <strong>Leave the leaderboard</strong> in World, or use <strong>Delete all data</strong> while you are online. See <a href="#leaderboard-delete">Delete your leaderboard data</a>, also for when you no longer have your phone.</li>
   <li><strong>Solves:</strong> In Records you can delete solves one by one, or delete all solves for a size. This also deletes their replays.</li>
-  <li><strong>Everything in the app:</strong> Choose … → Settings → Your data → <strong>Delete all data</strong>. This deletes everything in the table above from your device: your times and records, guide progress, lessons, saved cubes, settings, camera choice, error log, the replays of your solves, the landscape cache, and the Earth pictures. The app starts again as new, on the home screen. The app's own files stay, so it still works offline. The camera permission also stays until you turn it off (see <strong>Camera</strong> above).</li>
+  <li><strong>Everything in the app:</strong> Choose … → Settings → Your data → <strong>Delete all data</strong>. This deletes everything in the table above from your device: your times and records, guide progress, lessons, saved cubes, settings, camera choice, smart cube address, error log, the replays of your solves, the landscape cache, and the Earth pictures. The app starts again as new, on the home screen. The app's own files stay, so it still works offline. Permissions you gave the app when it asked, like the camera, also stay until you turn them off in your phone's or browser's settings.</li>
   <li><strong>The Android app:</strong> Uninstalling the app deletes its data from the phone. You can also open your phone's Settings, find Kubelo among the apps, and clear its storage.</li>
   <li><strong>The iPhone app:</strong> Deleting the app deletes its data from the phone.</li>
   <li><strong>In a browser:</strong> Delete the site data for this website in your browser's settings. If you used Kubelo in a browser before you got the app, that data is still in the browser until you delete it there.</li>

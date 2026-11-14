@@ -1,0 +1,1 @@
+import{r as e}from"./debug-e29s2OK3.js";var t=t=>e(`nolearn`,t)===null,n=t=>e(`learn`,t)!==null;function r(){try{let e=globalThis.KubeloShell;return typeof e?.cubeBridgeVersion==`function`?e.cubeBridgeVersion()>=1:typeof navigator<`u`&&typeof navigator.bluetooth?.requestDevice==`function`}catch{return!1}}var i=e=>r()&&!0;export{n,i as r,t};

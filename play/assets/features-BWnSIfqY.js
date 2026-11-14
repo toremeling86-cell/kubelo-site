@@ -1,1 +1,0 @@
-import{r as e}from"./debug-e29s2OK3.js";var t=t=>e(`nolearn`,t)===null,n=t=>e(`learn`,t)!==null;export{n,t};
