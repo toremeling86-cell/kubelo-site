@@ -1,0 +1,1 @@
+import{Tn as e,wn as t}from"./index-DVM3F_kt.js";import{i as n}from"./scrambles-hf7jJqLt.js";function r(r,i){let a=n(i);if(!a)return null;let o=null;for(let i of r){if(i.size!==3||!t(i)||n(i.scramble)!==a)continue;let r=e(i);Number.isFinite(r)&&(o===null||r<o)&&(o=r)}return o}export{r as t};

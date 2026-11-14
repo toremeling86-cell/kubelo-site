@@ -1,12 +1,12 @@
 {
   "name": "Kubelo",
   "short_name": "Kubelo",
-  "description": "Scan your own 3x3 and solve it on screen, one move at a time.",
+  "description": "Scan your own cube with your phone, and Kubelo shows every move until it's solved. Free, no ads, no account.",
   "start_url": "/",
   "scope": "/",
   "display": "browser",
-  "theme_color": "#0b1230",
-  "background_color": "#0b1230",
+  "theme_color": "#000618",
+  "background_color": "#000618",
   "icons": [
     { "src": "/site/icon-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "/site/icon-512.png", "sizes": "512x512", "type": "image/png" }

@@ -5,7 +5,9 @@
    Round 19: any size from 2x2 to 7x7, several cubes in one draw (the flowing page), four light moods
    (blue hour, night, sunrise, morning) and the cube's outline on screen (the scan frame locks to it).
    Round 21: the cube in the hero can be twisted with a finger (pick, Story.twist*), as in the app (engine/gestures.ts, engine/turns.ts), and Scan solves the cube as you left it.
-   window.KubeloCube = { Renderer, Story, model, outline, pick, ... } */
+   window.KubeloCube = { Renderer, Story, model, outline, pick, ... }
+   r22 (landing prototypes, 13.11.2026): a copy of landing/site/cube.js (r21) with one addition, toScreen(), so a page can draw on the cube
+   (the arrow for the next move). Nothing else is changed. */
 (function (G) {
   'use strict';
   var PI = Math.PI, D2R = PI / 180;
@@ -836,6 +838,8 @@
 
   G.KubeloCube = {
     Renderer: Renderer, Story: Story, model: model, outline: outline, pick: pick, symbolFor: symbolFor, moveOf: moveOf, pushMove: pushMove, ALG: ALG, COLORS: COLORS, SIZES: SIZES,
-    MOODS: MOODS, parseAlg: parseAlg, version: 'r21'
+    MOODS: MOODS, parseAlg: parseAlg, version: 'r21+r22',
+    /** r22: points in the cube's own space (one piece is 1 wide, a 3x3 spans -1.5..1.5; the layer being turned is not turned here) to CSS px in the stage. */
+    toScreen: function (scene, lay, pts) { var M = mul(viewProj(lay), cubeMatrix(scene)); return pts.map(function (v) { var r = project(M, v); return [r[0] * lay.W, r[1] * lay.H]; }); }
   };
 })(typeof window !== 'undefined' ? window : self);
