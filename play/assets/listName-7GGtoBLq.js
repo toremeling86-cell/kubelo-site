@@ -1,1 +1,0 @@
-import"./contract-CsSLyXAm.js";import{t as e}from"./board-B-AWeD0U.js";function t(t){return e(t===33?`league.size.smart`:t===2?`list.name.2`:`list.name.3`)}export{t};
